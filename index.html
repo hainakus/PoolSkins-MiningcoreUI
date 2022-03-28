@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>ERGO MARKET</title>
+
+    </head>
+    <body>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1d1d26;
+        }
+
+    </style>
+    <div id="outlet"></div>
+    <style>
+        #outlet > .leaving {
+            animation: 1s fadeOut ease-in-out;
+        }
+        #outlet > .entering {
+            animation: 1s fadeIn linear;
+        }
+        @keyframes fadeOut {
+            from {opacity: 1;}
+            to {opacity: 0;}
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+    </style>
+
+    </body>
+
+</html>
