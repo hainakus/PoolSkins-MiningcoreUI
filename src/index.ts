@@ -3,6 +3,7 @@
 console.log("Hello World!");
 import { MarketStore } from "./store";
 import './skinA';
+import './card'
 import './router';
 
 

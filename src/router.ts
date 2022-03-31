@@ -6,7 +6,7 @@ router.setRoutes([{
   animate: true,
   children: [
     {path: '', component: 'x-skin-a'},
-    {path: '/image-:size(\\d+)px', component: 'x-image-view'},
+    {path: '/background', component: 'x-card'},
     {path: '/users', component: 'x-user-list'},
     {path: '/users/:user', component: 'x-user-profile'},
   ]
