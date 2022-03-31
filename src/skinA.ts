@@ -357,7 +357,6 @@ class SkinA extends HTMLElement {
                   align-items: center;
                   position: absolute;
                   width: 100%;
-                  z-index: 9999;
                   top: 0;
             }
             .navigation svg {
@@ -544,8 +543,7 @@ class SkinA extends HTMLElement {
             ". . . ."; 
             justify-items: self-start;
             margin-left: 40px;
-            z-index: 9999;
-            top: 40px;
+            top: 60px;
             position: absolute;
             left: 10px;
             right: 10px;
