@@ -5,7 +5,7 @@ import { Strip, StripGeometry, UvPreset } from "three-strip";
 import { getErgoPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { globalStore } from "./index";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Frame } from "../../../Documents/GitHub/three-strip/src/Type";
+
 import { Matrix4 } from "three";
 
 class SkinA extends HTMLElement {
@@ -154,7 +154,7 @@ class SkinA extends HTMLElement {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
-    function f(strip_geom: { getAttribute: (arg0: string) => { (): any; new(): any; array: any } }, radius_fn: { (i: any, I: any): number; (arg0: number, arg1: number): number }, frames: Frame[], result: Matrix4) { // random pos lying on strip
+    function f(strip_geom: { getAttribute: (arg0: string) => { (): any; new(): any; array: any } }, radius_fn: { (i: any, I: any): number; (arg0: number, arg1: number): number }, frames: any[], result: Matrix4) { // random pos lying on strip
       const ab_pos = strip_geom.getAttribute('position').array;
       const n_idx = ab_pos.length / 6; // /3/2
       const idx = Math.random() * n_idx | 0;
