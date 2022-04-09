@@ -2,8 +2,10 @@
 
 console.log("Hello World!");
 import { MarketStore } from "./store";
+import './search'
+import './charts'
 import './skinA';
-import './card'
+import './dashboard'
 import './router';
 
 

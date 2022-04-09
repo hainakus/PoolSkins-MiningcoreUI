@@ -1,12 +1,22 @@
 import { createQuery } from "@datorama/akita";
 import { map, tap } from "rxjs";
 import * as THREE from "three";
-import { Strip, StripGeometry, UvPreset } from "three-strip";
 import { getErgoPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { globalStore } from "./index";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import { Matrix4 } from "three";
+
+console.log("Hello World!");
+
+
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { FlakesTexture } from './FlakesTexture.js';
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from "three";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+import { ParametricGeometries } from "three/examples/jsm/geometries/ParametricGeometries";
+import PlaneGeometry = ParametricGeometries.PlaneGeometry;
 
 class SkinA extends HTMLElement {
   constructor() {
@@ -20,6 +30,7 @@ class SkinA extends HTMLElement {
   }
 
   private _miners: any;
+  private MTLFile: string = 'assets/IndoorPotPlant/indoor plant_02_obj/indoor plant_02.mtl';
 
   get miners() {
     return this._miners;
@@ -60,24 +71,31 @@ class SkinA extends HTMLElement {
     getErgoPrice().subscribe(e => this.ergoPrice = e);
 
 
-    const triggerBttn = this.shadowRoot.querySelector(".pop-video");
-    const closeBttn = this.shadowRoot.querySelector(".close");
+    // const triggerBttn = this.shadowRoot.querySelector(".pop-video");
+    // const closeBttn = this.shadowRoot.querySelector(".close");
+    const nav = this.shadowRoot.querySelector("nav");
+    const toggle = this.shadowRoot.querySelector(".pop-video");
 
-    const bg = this.shadowRoot.querySelector(".hero");
-    const toggleOverlay = () => {
+    toggle.addEventListener("click", () => {
+      nav.classList.toggle("open-nav");
+      toggle.classList.toggle("open-nav");
+    });
 
-      const overlay = this.shadowRoot.querySelector(".overlay");
-      if (overlay.className.split(" ").includes("open")) {
-        overlay.classList.remove("open");
-
-        bg.classList.remove("clear");
-
-      } else {
-        overlay.className += " open ";
-      }
-    };
-    triggerBttn.addEventListener("click", toggleOverlay);
-    closeBttn.addEventListener("click", toggleOverlay);
+    // const bg = this.shadowRoot.querySelector(".hero");
+    // const toggleOverlay = () => {
+    //
+    //   const overlay = this.shadowRoot.querySelector(".overlay");
+    //   if (overlay.className.split(" ").includes("open")) {
+    //     overlay.classList.remove("open");
+    //
+    //     bg.classList.remove("clear");
+    //
+    //   } else {
+    //     overlay.className += " open ";
+    //   }
+    // };
+    // triggerBttn.addEventListener("click", toggleOverlay);
+    // closeBttn.addEventListener("click", toggleOverlay);
 
   }
 
@@ -92,13 +110,13 @@ class SkinA extends HTMLElement {
       .subscribe();
 
     query.select(state => state).pipe(tap((data: any) => {
-      this.shadowRoot.querySelector("ul").innerHTML = "";
+      this.shadowRoot.querySelector("ul.miners").innerHTML = "";
       data.miners.forEach((mine: any) => {
         const li = document.createElement("li");
         miner(mine.miner).subscribe(e => this.minerHashrate = e);
         li.innerHTML = mine.miner + "  " + this.getReadableHashRateString(mine.hashrate);
 
-        this.shadowRoot.querySelector("ul").append(li);
+        this.shadowRoot.querySelector("ul.miners").append(li);
       });
     })).subscribe();
     poolStats()
@@ -115,125 +133,53 @@ class SkinA extends HTMLElement {
 
 
   main() {
-    const renderer = new THREE.WebGLRenderer({ alpha: true } );
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, 2, .1, 100);
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-    scene.background = new THREE.Color('#dedede');
-    camera.position.set(0, 0, 5);
-    controls.autoRotate = true;
-    controls.enableDamping = true;
-    renderer.shadowMap.enabled = true;
+    const renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.physicallyCorrectLights = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
-    const light = new THREE.DirectionalLight('white', 1);
-    light.position.set(-2, 2, 1);
-    scene.add(light);
-    light.castShadow = true;
-    light.shadow.bias = -0.0001;
-    scene.add(new THREE.AmbientLight('white', .5));
+    document.body.appendChild( renderer.domElement );
+    const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444, 0.6 );
+    hemiLight.position.set( 0, 100, 0 );
+    scene.add( hemiLight );
 
-    const N_SEG = 400;
-    const BREADTH = .5;
-    const curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-1, -1, 0),
-      new THREE.Vector3(-1, 1, 0),
-      new THREE.Vector3(1, 1, 0),
-      new THREE.Vector3(1, -1, 0),
-    ], true);
-    const radius_fn = (i: number, I: number) => .1 + .5 * (1 - 2 * Math.abs(i / I - .5));
-    const tilt = (i: number, I: number) => Math.PI * i / I * 6;
-    // @ts-ignore
-    const strip = new Strip(curve, radius_fn, tilt);
-    const frames = strip.computeFrames(N_SEG);
-// scene.add(new StripHelper(strip, N_SEG));
-    const strip_geom:any = new StripGeometry(strip, N_SEG);
-    const mat = new THREE.MeshPhysicalMaterial({ clearcoat: 1, roughness: 1, side: THREE.DoubleSide });
-    const mesh = new THREE.Mesh(strip_geom, mat);
-    scene.add(mesh);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    const dirLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
+    dirLight.position.set( 0, 100, 100 );
+    scene.add( dirLight );
 
-    function f(strip_geom: { getAttribute: (arg0: string) => { (): any; new(): any; array: any } }, radius_fn: { (i: any, I: any): number; (arg0: number, arg1: number): number }, frames: any[], result: Matrix4) { // random pos lying on strip
-      const ab_pos = strip_geom.getAttribute('position').array;
-      const n_idx = ab_pos.length / 6; // /3/2
-      const idx = Math.random() * n_idx | 0;
-      const pa = new THREE.Vector3(...ab_pos.subarray(idx * 6, idx * 6 + 3));
-      const pb = new THREE.Vector3(...ab_pos.subarray(idx * 6 + 3, idx * 6 + 6));
-      const pa2pb = new THREE.Vector3().subVectors(pb, pa);
-      const len = 2 * radius_fn(idx, n_idx);
-      pa2pb.normalize().multiplyScalar(len * Math.random());
-      pa.add(pa2pb);
-      const [B, N, T] = frames[idx];
-      // @ts-ignore
-      result.makeBasis(B, N, T).setPosition(pa);
+
+
+        const geometry = new THREE.PlaneGeometry(1, 1, 1)
+
+        const material = new MeshPhysicalMaterial({
+          wireframe: true,
+          color: new Color().setStyle('red')
+        })
+
+      const mesh = new THREE.Mesh(geometry, material)
+
+      scene.add( mesh );
+
+
+    camera.position.z = 100;
+    function animate() {
+      requestAnimationFrame( animate );
+      renderer.render( scene, camera );
     }
 
-// texture by Hans Isaacson - https://unsplash.com/photos/kFEHiT68zno
-    const url = 'https://images.unsplash.com/photo-1636442330662-6f0a898190a6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMTJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60';
-    const tex = new THREE.TextureLoader().load(url);
-    tex.wrapT = THREE.MirroredRepeatWrapping;
-    { // https://codepen.io/ycw/pen/KKZgPyB?editors=1000
-      const N_INST = 1000;
-      // @ts-ignore
-      const strip = new Strip(new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(.5, .8, 0),
-        new THREE.Vector3(-.1, 2, 0),
-        new THREE.Vector3(0, 0, 0),
-      ), (i, I) => .15 * (i / I), (i, I) => Math.PI * 0.4 * i / I * 0);
-      const geom = new StripGeometry(strip, 32, UvPreset.strip[0]);
-      const mat = new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, roughness: 1, alphaMap: tex, alphaTest: .3 });
-      // @ts-ignore
-      const mesh = new THREE.InstancedMesh(geom, mat, N_INST);
-      const $mat_basis = new THREE.Matrix4();
-      const $mat_r = new THREE.Matrix4(); // ry
-      const $mat_s = new THREE.Matrix4(); // scale
-      const $col = new THREE.Color();
-      for (let i = 0; i < N_INST; ++i) {
-        $mat_r.makeRotationY(Math.PI * Math.random());
-        $mat_s.makeScale(Math.random() + .1, Math.random(), Math.random() + .1);
-        f(strip_geom, radius_fn, frames, $mat_basis);
-        mesh.setMatrixAt(i, $mat_basis.multiply($mat_r).multiply($mat_s));
-        mesh.setColorAt(i, $col.setHSL(Math.random(), .1, .2));
-      }
-      scene.add(mesh);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-    }
+    animate();
 
-
-// ----
-// render
-// ----
-
-    renderer.setAnimationLoop(() => {
-      renderer.render(scene, camera);
-      controls.update();
-      tex.offset.y += 0.01;
-    });
-
-// ----
-// view
-// ----
-
-    function resize(w: number, h: number, dpr = devicePixelRatio) {
-      renderer.setPixelRatio(dpr);
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    addEventListener('resize', () => resize(innerWidth, innerHeight));
-    dispatchEvent(new Event('resize'));
-    document.querySelector('body').prepend(renderer.domElement);
   }
 
   html() {
     return `
    <style>
-        body {
-            margin: 0;
-           
-        }
+   
         #c {
             width: 100vw;
             height: 100vh;
@@ -302,10 +248,10 @@ class SkinA extends HTMLElement {
             /*    filter: grayscale(0) brightness(0.9); !* Microsoft Edge and Firefox 35+ *!*/
             /*    }*/
             .center-content {
-                position: absolute;
+                grid-area: footer;
                 bottom: 30px;
                 right: 30px;
-              width: 50%;
+              width: 100%;
               display: flex;
               flex-direction: column;
               align-items: flex-end;
@@ -317,9 +263,9 @@ class SkinA extends HTMLElement {
             }
             .center-content h1 {
               
-              margin-bottom: 0;
+              margin: 0;
               text-align: end;
-              font-size: 7.5rem;
+              font-size: 5.5rem;
               cursor:pointer;
                color: #FFF;
               font-weight: 400;
@@ -369,6 +315,10 @@ class SkinA extends HTMLElement {
             }
             .pop-video svg {
                  cursor: pointer;
+                   z-index: 999;
+            }
+            .pop-video.open-nav svg path, .pop-video.open-nav svg polygon {
+              fill: #FFF;
             }
             .buttons {
                 flex: 1;
@@ -377,6 +327,7 @@ class SkinA extends HTMLElement {
                  flex: 0;   
                  justify-self: flex-end;
                  margin-right: 30px;
+                   z-index: 999;
             }
             
             
@@ -531,23 +482,23 @@ class SkinA extends HTMLElement {
           flex-wrap: nowrap;
           }
         .container {
-        
+          padding: 0px 20px 0px 20px;
           display: grid; 
           grid-template-columns: 1fr 1fr 1fr 1fr; 
-          grid-template-rows: 1fr 1fr 1fr 1fr; 
-          gap: 10px 10px; 
+          grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr; 
+          gap: 50px; 
           grid-template-areas: 
-            ". card card2 card3"
+            ". dash dash dash"
+            "score dash dash dash"
+            "score dash dash dash"
             "score . . ."
-            "score . . ."
-            ". . . ."; 
+            "score . . ." 
+            ". footer footer footer"; 
             justify-items: self-start;
             margin-left: 40px;
             top: 60px;
-            position: absolute;
-            left: 10px;
-            right: 10px;
-            max-height: 350px;
+            max-height: 100vh;
+            max-width: 100%;
         }
         .score { 
         grid-area: score; }
@@ -583,52 +534,95 @@ class SkinA extends HTMLElement {
                      width:  80%;
                      height: 226px;
          }
+         .dash {
+            grid-area: dash;
+         }
+         
         x-card {
         position: relative;
         }
+        .open-nav {
+          transform: translateX(0%);
+        }
+        
+        nav {
+          background-color: var(--theme-color);
+          height: 100vh;
+          width: 50%;
+          position: fixed;
+          right: 0;
+          top: 0;
+          transform: translateX(100%);
+          transition: transform 0.5s ease-in-out;
+          z-index: 1;
+           backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+        }
+        
+        nav ul {
+          display: flex;
+          flex-direction: column;
+          gap: 2em;
+          margin-top: 8em;
+        }
+        
+        nav li {
+          list-style-type: none;
+          font-size: 2em;
+          margin: 0.5em 2em;
+        }
     </style>
 
-       <div id="c"></div>
+
 
         
-              <header class="hero">
+              <div class="hero">
              
-              <div class="navigation">
-                    <div class="buttons">   
-                        <svg class="button-back" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
-                        <svg class="button-fwd" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg>
-                    </div>
-                  
-                    <div class="pop-video">
-                  <svg width="30" height="34" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                       viewBox="0 0 58.4 58.4" style="enable-background:new 0 0 58.4 58.4;" xml:space="preserve" icon>
-                          <style type="text/css">
-                          \t.st0{fill-rule:evenodd;clip-rule:evenodd;}
-                          </style>
-                                  <title>Group 16</title>
-                                  <desc>Created with Sketch.</desc>
-                                  <g id="main">
-                          \t<g id="Group-16" transform="translate(-70.000000, -35.000000)">
-                          \t\t<g transform="translate(70.000000, 34.000000)">
-                          \t\t\t<g id="Group-15" transform="translate(0.000000, 0.830280)">
-                          \t\t\t\t<path fill="white" id="Fill-9" class="st0" d="M11.2,47.8l18.3,7.4l18.2-7.8L55,29.1l-7.8-18.2L28.9,3.6l-18.2,7.8L3.4,29.7L11.2,47.8z
-                          \t\t\t\t\t M29.5,58.6c-0.2,0-0.4,0-0.6-0.1L9.3,50.6c-0.4-0.2-0.7-0.5-0.9-0.9L0.1,30.3c-0.2-0.4-0.2-0.8,0-1.3L8,9.5
-                          \t\t\t\t\tc0.2-0.4,0.5-0.7,0.9-0.9l19.4-8.3c0.4-0.2,0.8-0.2,1.3,0l19.6,7.9C49.5,8.3,49.8,8.6,50,9l8.3,19.4c0.2,0.4,0.2,0.8,0,1.3
-                          \t\t\t\t\tl-7.9,19.6c-0.2,0.4-0.5,0.7-0.9,0.9l-19.4,8.3C30,58.6,29.7,58.6,29.5,58.6z"/>
-                                  <polygon fill="white" id="Fill-10" class="st0" points="33.4,29.1 25.6,37.7 38,37.7 38,41.5 20.5,41.5 20.5,37.7 28.3,29.1 20.5,21
-                          \t\t\t\t\t20.5,17.3 38,17.3 38,21 25.8,21 \t\t\t\t"/>
-                          \t\t\t</g>
-                          \t\t</g>
-                          \t</g>
-                          </g>
-                      </svg>
-
-                    </div>
-              </div> 
+                  <div class="navigation">
+                        <div class="buttons">   
+                            <svg class="button-back" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
+                            <svg class="button-fwd" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg>
+                        </div>
+                      
+                        <div class="pop-video">
+                            <svg width="30" height="34" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                 viewBox="0 0 58.4 58.4" style="enable-background:new 0 0 58.4 58.4;" xml:space="preserve" icon>
+                                    <style type="text/css">
+                                    .st0{fill-rule:evenodd;clip-rule:evenodd;}
+                                    </style>
+                                            <title>Group 16</title>
+                                            <desc>Created with Sketch.</desc>
+                                            <g id="main">
+                                    <g id="Group-16" transform="translate(-70.000000, -35.000000)">
+                                    <g transform="translate(70.000000, 34.000000)">
+                                    <g id="Group-15" transform="translate(0.000000, 0.830280)">
+                                    <path fill="white" id="Fill-9" class="st0" d="M11.2,47.8l18.3,7.4l18.2-7.8L55,29.1l-7.8-18.2L28.9,3.6l-18.2,7.8L3.4,29.7L11.2,47.8z
+                                     M29.5,58.6c-0.2,0-0.4,0-0.6-0.1L9.3,50.6c-0.4-0.2-0.7-0.5-0.9-0.9L0.1,30.3c-0.2-0.4-0.2-0.8,0-1.3L8,9.5
+                                    c0.2-0.4,0.5-0.7,0.9-0.9l19.4-8.3c0.4-0.2,0.8-0.2,1.3,0l19.6,7.9C49.5,8.3,49.8,8.6,50,9l8.3,19.4c0.2,0.4,0.2,0.8,0,1.3
+                                    l-7.9,19.6c-0.2,0.4-0.5,0.7-0.9,0.9l-19.4,8.3C30,58.6,29.7,58.6,29.5,58.6z"/>
+                                            <polygon fill="white" id="Fill-10" class="st0" points="33.4,29.1 25.6,37.7 38,37.7 38,41.5 20.5,41.5 20.5,37.7 28.3,29.1 20.5,21
+                                    20.5,17.3 38,17.3 38,21 25.8,21 "/>
+                                    </g>
+                                    </g>
+                                    </g>
+                                    </g>
+                                </svg>
+                        </div>
+                  </div> 
+                   <nav>
+           
+                    <ul>
+                      <x-search></x-search>
+                      <h1>Miners</h1>
+                      <li><a href="">Home</a></li>
+                      <li><a href="">About</a></li>
+                      <li><a href="">Contact</a></li>
+                    </ul>
+                  </nav>
               <div class="container">
-                    <div class="card"><x-card></x-card><h1>Dummy</h1></div>
-                    <div class="card2"></div>
-                     <div class="card3"></div>
+<!--                    <div class="card"><x-card></x-card><h1>Dummy</h1></div>-->
+<!--                    <div class="card2"></div>-->
+<!--                     <div class="card3"></div>-->
 <!--                <div class="play-btn" id="play">-->
 <!--              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512">-->
 <!--                      <g>-->
@@ -638,18 +632,15 @@ class SkinA extends HTMLElement {
 <!--                        </g>-->
 <!--                      </g>-->
 <!--                    </svg>-->
-                    <slot name="cards">
+                    <x-dash class="dash"></x-dash>
                      <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
                         ERG
                         <p id="price"></p> USD
                       </div>
-                </slot>
-                </div>
-                 
-              </div>
-              <div class="center-content">
+                      
+                      <div class="center-content">
 <!--                 <a href="#" class="button play-btn">ERGO POOL</a>-->
                 <h1 class="image-mask"><slot name="title"><div id="pool"></div> </slot></h1>
                 <h3>Pool Fee 1%, PPLNS</h3>
@@ -663,6 +654,10 @@ class SkinA extends HTMLElement {
                     
                 </div>
               </div>
+                </div>
+                 
+              </div>
+              
               <div class="overlay overlay-effect">
                 <button type="button" class="close">Close</button>
                 <slot name="workers">
@@ -674,7 +669,7 @@ class SkinA extends HTMLElement {
                     </div>
                   </slot>
               </div>
-            </header>
+            </div>
         `;
   }
 
