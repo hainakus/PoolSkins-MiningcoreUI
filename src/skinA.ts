@@ -1,22 +1,14 @@
 import { createQuery } from "@datorama/akita";
 import { map, tap } from "rxjs";
 import * as THREE from "three";
+import { Color, MeshPhysicalMaterial } from "three";
 import { getErgoPrice, miner, minerList, poolStats, statistics } from "./api.service";
-import { globalStore } from "./index";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { _formatter, globalStore } from "./index";
+
 
 
 console.log("Hello World!");
 
-
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
-import { FlakesTexture } from './FlakesTexture.js';
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from "three";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { ParametricGeometries } from "three/examples/jsm/geometries/ParametricGeometries";
-import PlaneGeometry = ParametricGeometries.PlaneGeometry;
 
 class SkinA extends HTMLElement {
   constructor() {
@@ -124,7 +116,7 @@ class SkinA extends HTMLElement {
         tap(stats => {
           this.shadowRoot.querySelector("#pool").innerHTML = "";
           const poolHash = document.createElement("h1");
-          poolHash.innerText = "POOL HASHRATE " + this.getReadableHashRateString(stats.poolHashrate);
+          poolHash.innerText = "POOL HASHRATE " + _formatter(stats.poolHashrate, 5, "H/s");
           this.shadowRoot.querySelector("#pool").append(poolHash);
         }))
       .subscribe();
@@ -143,7 +135,7 @@ class SkinA extends HTMLElement {
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
 
-    document.body.appendChild( renderer.domElement );
+    //document.body.appendChild( renderer.domElement );
     const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444, 0.6 );
     hemiLight.position.set( 0, 100, 0 );
     scene.add( hemiLight );
@@ -225,28 +217,7 @@ class SkinA extends HTMLElement {
 
   
             }
-            /*.hero::before {*/
-            /*      content: "";*/
-            /*      position: absolute;*/
-            /*      top: 0; left: 0;*/
-            /*      width: 100%; height: 100%;*/
-            
-            /*     background-repeat: no-repeat;*/
-            /*     background-size: cover;*/
-            /*    -webkit-filter: grayscale(.8); !* Google Chrome, Safari 6+ & Opera 15+ *!*/
-            /*    filter: grayscale(.8) brightness(0.9); !* Microsoft Edge and Firefox 35+ *!*/
-            /*    }*/
-            /*     .hero.clear::before {*/
-            /*      content: "";*/
-            /*      position: absolute;*/
-            /*      top: 0; left: 0;*/
-            /*      width: 100%; height: 100%;*/
-            
-            /*     background-repeat: no-repeat;*/
-            /*     background-size: cover;*/
-            /*    -webkit-filter: grayscale(0); !* Google Chrome, Safari 6+ & Opera 15+ *!*/
-            /*    filter: grayscale(0) brightness(0.9); !* Microsoft Edge and Firefox 35+ *!*/
-            /*    }*/
+          
             .center-content {
                 grid-area: footer;
                 bottom: 30px;
@@ -348,91 +319,8 @@ class SkinA extends HTMLElement {
 
                 
             }
-            .overlay nav {
-              text-align: center;
-              position: relative;
-              top: 50%;
-              height: 60%;
-              font-size: 54px;
-              -webkit-transform: translateY(-50%);
-              transform: translateY(-50%);
-            }
-            .overlay ul {
-              list-style: none;
-              padding: 0;
-              margin: 0 auto;
-              display: inline-block;
-              height: 100%;
-              position: relative;
-            }
-            .overlay ul li {
-              display: block;
-              height: 20%;
-              height: calc(100% / 5);
-            }
-            .overlay ul li a {
-              font-weight: 300;
-              display: block;
-              color: #ffffff;
-              text-decoration: none;
-              -webkit-transition: color 0.2s;
-              -moz-transition: color 0.2s;
-              transition: color 0.2s;
-            }
-            .overlay ul li a:hover, .overlay ul li a:focus {
-              color: rgba(255, 255, 255, 0.7);
-            }
-            .overlay .close {
-              width: 80px;
-              height: 80px;
-              position: absolute;
-              right: 20px;
-              top: 20px;
-              overflow: hidden;
-              border: none;
-              background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/113212/cross.png) no-repeat center center;
-              text-indent: 200%;
-              outline: none;
-              color: transparent;
-              z-index: 100;
-            }
-            
-            .overlay-effect {
-              opacity: 0;
-              visibility: hidden;
-              -webkit-transition: opacity 0.5s, visibility 0s 0.5s;
-              -moz-transition: opacity 0.5s, visibility 0s 0.5s;
-              transition: opacity 0.5s, visibility 0s 0.5s;
-            }
-            .overlay-effect.open {
-              opacity: 1;
-              visibility: visible;
-              -webkit-transition: opacity 0.5s;
-              -moz-transition: opacity 0.5s;
-              transition: opacity 0.5s;
-            }
-            .overlay-effect nav {
-              -webkit-perspective: 1200px;
-              perspective: 1200px;
-            }
-            .overlay-effect nav ul {
-              opacity: 0.4;
-              -webkit-transform: translateY(-25%) rotateX(35deg);
-              transform: translateY(-25%) rotateX(35deg);
-              -webkit-transition: -webkit-transform 0.5s, opacity 0.5s;
-              transition: transform 0.5s, opacity 0.5s;
-            }
-            
-            .overlay-effect.open nav ul {
-              opacity: 1;
-              -webkit-transform: rotateX(0deg);
-              transform: rotateX(0deg);
-            }
-            
-            .overlay-effect.close nav ul {
-              -webkit-transform: translateY(25%) rotateX(-35deg);
-              transform: translateY(25%) rotateX(-35deg);
-            }
+
+
             .image-mask {
               
                
@@ -463,11 +351,13 @@ class SkinA extends HTMLElement {
             .cards{
                position: relative;
                 font-size: 12px;
+                color: #999ba5;
             }
             p {
             font-family: Roboto,sans-serif;
             font-weight: 800;
             font-size: 40px;
+            color: #999ba5;
            }
           .col {
           display: flex;
@@ -492,7 +382,7 @@ class SkinA extends HTMLElement {
             "score dash dash dash"
             "score dash dash dash"
             "score . . ."
-            "score . . ." 
+            "score nav nav nav" 
             ". footer footer footer"; 
             justify-items: self-start;
             margin-left: 40px;
@@ -534,7 +424,7 @@ class SkinA extends HTMLElement {
                      width:  80%;
                      height: 226px;
          }
-         .dash {
+         ::slotted(*) {
             grid-area: dash;
          }
          
@@ -546,22 +436,14 @@ class SkinA extends HTMLElement {
         }
         
         nav {
-          background-color: var(--theme-color);
-          height: 100vh;
-          width: 50%;
-          position: fixed;
-          right: 0;
-          top: 0;
-          transform: translateX(100%);
-          transition: transform 0.5s ease-in-out;
-          z-index: 1;
-           backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
+          grid-area: nav;
+        
+   
         }
         
         nav ul {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           gap: 2em;
           margin-top: 8em;
         }
@@ -609,17 +491,9 @@ class SkinA extends HTMLElement {
                                 </svg>
                         </div>
                   </div> 
-                   <nav>
-           
-                    <ul>
-                      <x-search></x-search>
-                      <h1>Miners</h1>
-                      <li><a href="">Home</a></li>
-                      <li><a href="">About</a></li>
-                      <li><a href="">Contact</a></li>
-                    </ul>
+                 
                   </nav>
-              <div class="container">
+              
 <!--                    <div class="card"><x-card></x-card><h1>Dummy</h1></div>-->
 <!--                    <div class="card2"></div>-->
 <!--                     <div class="card3"></div>-->
@@ -632,15 +506,25 @@ class SkinA extends HTMLElement {
 <!--                        </g>-->
 <!--                      </g>-->
 <!--                    </svg>-->
-                    <x-dash class="dash"></x-dash>
-                     <div class="cards score">
+       
+                  <main >
+                  <div class="container">
+                    <slot></slot>
+                                      <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
                         ERG
                         <p id="price"></p> USD
                       </div>
-                      
-                      <div class="center-content">
+                       <nav>
+           
+                          <ul>
+                            <li><a href="">Home</a></li>
+                            <li><a href="">About</a></li>
+                            <li><a href="">Contact</a></li>
+                           </ul>
+                         </nav>
+              <div class="center-content">
 <!--                 <a href="#" class="button play-btn">ERGO POOL</a>-->
                 <h1 class="image-mask"><slot name="title"><div id="pool"></div> </slot></h1>
                 <h3>Pool Fee 1%, PPLNS</h3>
@@ -654,21 +538,14 @@ class SkinA extends HTMLElement {
                     
                 </div>
               </div>
-                </div>
+              </div>
+                  </main>
+   
+       
                  
               </div>
               
-              <div class="overlay overlay-effect">
-                <button type="button" class="close">Close</button>
-                <slot name="workers">
-                <div class="workers">
-                 <h1 style="color: white;">MINERS</h1>
-                    <ul style="overflow: auto;">
-                   
-                    </ul>
-                    </div>
-                  </slot>
-              </div>
+          
             </div>
         `;
   }

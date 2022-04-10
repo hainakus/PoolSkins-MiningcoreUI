@@ -15,9 +15,9 @@
         }
 
         :root {
-            --theme-bg-color: rgba(0 0 0 / 98%);
+            --theme-bg-color:  #EEF0F4;
             --border-color: rgba(113 119 144 / 25%);
-            --theme-color: #2a2e3c;
+            --theme-color: #e5e5e5;
             --inactive-color: rgb(113 119 144 / 78%);
             --body-font: "Poppins", sans-serif;
             --hover-menu-bg: rgba(12 15 25 / 30%);
@@ -60,8 +60,26 @@
             left: 0;
             bottom: 0;
         }
+        body {
+            height:100vh;
+            background:#EEF0F4;
+            background-size: 120% 120%;
+
+        }
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
     </style>
     <div id="outlet"></div>
+
     <style>
         #outlet > .leaving {
             animation: 1s fadeOut ease-in-out;

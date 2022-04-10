@@ -31,6 +31,7 @@
     "axios": "^0.26.1",
     "d3": "^7.4.2",
     "gsap": "^3.10.1",
+    "moment": "^2.29.2",
     "rxjs": "^7.5.5",
     "three": "^0.139.0",
     "three-strip": "git+https://github.com/hainakus/threejs-strip-fork.git"
