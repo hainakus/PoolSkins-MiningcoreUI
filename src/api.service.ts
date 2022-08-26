@@ -11,6 +11,8 @@ export const miner = (wallet: string) => defer( () => axios.get('/miners/'+ wall
 
 export const statistics = () => defer( () => axios.get('/statistics')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
+export const blocks = () => defer( () => axios.get('/blocks')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data.body.primary ))
+
 
 
 export const getCoinPrice = () => {

@@ -1,9 +1,5 @@
-import * as  THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { TextureLoader } from "three";
-import { statistics } from "./api.service";
+
+import { statistics, blocks } from "./api.service";
 import { pipe, tap } from "rxjs";
 import * as  moment from "moment";
 import { _formatter } from "./index";
@@ -12,6 +8,7 @@ import { _formatter } from "./index";
 class Dashboard extends HTMLElement {
   private _networkHashrate: any;
   private _poolStats: any;
+  private _blocks: any;
 
   set networkHashrate(value) {
       this._networkHashrate = value
@@ -24,6 +21,12 @@ class Dashboard extends HTMLElement {
   }
   get poolStats() {
     return this._poolStats;
+  }
+  set blocks(value) {
+    this._blocks = value
+  }
+  get blocks() {
+    return this._blocks;
   }
   constructor() {
     super();
@@ -49,6 +52,11 @@ class Dashboard extends HTMLElement {
       if (isFinite(minutes) && minutes > 0) {return (minutes + "m " + seconds + "s"); }
       return seconds ? (seconds + "s") : '-';
     }
+
+    blocks().subscribe(data => {
+      const blocks = data.pending
+      this.blocks = blocks
+    })
     statistics().pipe(tap( data => {
       console.log('data',data.body.primary.status)
         this.networkHashrate = data.body.primary
@@ -71,7 +79,7 @@ class Dashboard extends HTMLElement {
         networkDifficulty.innerHTML = _formatter(this.poolStats.network.difficulty, 5, "H/s");
         networkHashrate.innerHTML = _formatter(this.poolStats.network.hashrate, 5, "H/s");
         heightBlock.innerHTML = data.body.primary.status.effort.toFixed(2)
-        networkLastBlock.innerHTML = moment(this.poolStats.lastBlockDate).format('DD/MM/YYYY, HH:MM:SS');
+        networkLastBlock.innerHTML = this.poolStats.status.luck.luck100 + '%'
         activeMiners.innerHTML = this.poolStats.status.miners
         poolHash.innerHTML = _formatter(this.poolStats.hashrate.solo, 2, "H/s")
         poolFee.innerHTML = timeToFind ? timeToFind: '-'
@@ -216,7 +224,7 @@ class Dashboard extends HTMLElement {
       </div>
       <div class="card4">
 
-        <h4>Last Block</h4>
+        <h4>Pool Luck</h4>
         <span class="Block"><div id="networkLastBlock"></div></span>
                         
       </div>

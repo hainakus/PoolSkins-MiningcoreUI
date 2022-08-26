@@ -18,7 +18,3 @@ PERFORMANCE OF THIS SOFTWARE.
  * Copyright 2010-2022 Three.js Authors
  * SPDX-License-Identifier: MIT
  */
-
-//! moment.js
-
-//! moment.js locale configuration
