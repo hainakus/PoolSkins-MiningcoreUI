@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { defer, map, of } from "rxjs";
 
-axios.defaults.baseURL = 'http://neox-poolin.ml:3001/api/v1/Pool-Neoxa';
+axios.defaults.baseURL = 'http://neox-poolin.ml/api/v1/Pool-Neoxa';
 
 export const minerList = () => defer( () => axios.get('/miners')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
