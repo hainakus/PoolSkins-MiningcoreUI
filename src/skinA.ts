@@ -521,7 +521,7 @@ class SkinA extends HTMLElement {
               <div class="center-content">
 <!--                 <a href="#" class="button play-btn">ERGO POOL</a>-->
                 <h1 class="image-mask"><slot name="title"><div id="pool"></div> </slot></h1>
-                <h3>Pool Fee 0.5%, PROP</h3>
+                <h3>Pool Fee 0.5%, SOLO/PROP</h3>
                 <div class="footer">
                    <a href="">
                        
