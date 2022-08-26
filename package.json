@@ -23,7 +23,8 @@
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "serve": "webpack serve",
+    "server": "npx http-server ./dist"
   },
   "dependencies": {
     "@datorama/akita": "^7.1.1",

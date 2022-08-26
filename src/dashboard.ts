@@ -36,14 +36,29 @@ class Dashboard extends HTMLElement {
   }
 
   connectedCallback() {
-
+    function readableSeconds(t: number) {
+      var seconds = Math.round(t);
+      var minutes = Math.floor(seconds/60);
+      var hours = Math.floor(minutes/60);
+      var days = Math.floor(hours/24);
+      hours = hours-(days*24);
+      minutes = minutes-(days*24*60)-(hours*60);
+      seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60);
+      if (isFinite(days) && days > 0) { return (days + "d " + hours + "h " + minutes + "m " + seconds + "s"); }
+      if (isFinite(hours) && hours > 0) { return (hours + "h " + minutes + "m " + seconds + "s"); }
+      if (isFinite(minutes) && minutes > 0) {return (minutes + "m " + seconds + "s"); }
+      return seconds ? (seconds + "s") : '-';
+    }
     statistics().pipe(tap( data => {
-      console.log(data)
-      if(data) {
-        this.networkHashrate = data.pools[0].networkStats
-        this.poolStats = data.pools[0].poolStats
-        const fee = data.pools[0].poolFeePercent
-        const amountPaid = data.pools[0].totalPaid
+      console.log('data',data.body.primary.status)
+        this.networkHashrate = data.body.primary
+        this.poolStats = data.body.primary
+
+          var _ttfNetHashRate = this.poolStats.network.hashrate;
+          var _ttfHashRate = this.poolStats.hashrate.solo;
+        const timeToFind = readableSeconds(_ttfNetHashRate / _ttfHashRate * 60);
+        const fee = data.body.primary.config.recipientFee * 100
+        const amountPaid = Number(data.body.primary.payments.total).toFixed(2)
         const networkDifficulty = this.shadowRoot.querySelector('#networkDifficulty')
         const networkHashrate = this.shadowRoot.querySelector('#networkHashRate')
         const heightBlock = this.shadowRoot.querySelector('#networkBlockHeight')
@@ -53,15 +68,15 @@ class Dashboard extends HTMLElement {
         const poolFee = this.shadowRoot.querySelector('#poolFee')
         const poolPaid = this.shadowRoot.querySelector('#poolPaid')
 
-        networkDifficulty.innerHTML = _formatter(this.networkHashrate.networkDifficulty, 5, "H/s");
-        networkHashrate.innerHTML = _formatter(this.networkHashrate.networkHashrate, 5, "H/s");
-        heightBlock.innerHTML = this.networkHashrate.blockHeight
-        networkLastBlock.innerHTML = moment(this.networkHashrate.lastNetworkBlockTime).format('DD/MM/YYYY, HH:MM:SS');
-        activeMiners.innerHTML = this.poolStats.connectedMiners
-        poolHash.innerHTML = this.poolStats.poolHashrate
-        poolFee.innerHTML = fee + ' %'
-        poolPaid.innerHTML = amountPaid + ' ERG'
-      }
+        networkDifficulty.innerHTML = _formatter(this.poolStats.network.difficulty, 5, "H/s");
+        networkHashrate.innerHTML = _formatter(this.poolStats.network.hashrate, 5, "H/s");
+        heightBlock.innerHTML = data.body.primary.status.effort.toFixed(2)
+        networkLastBlock.innerHTML = moment(this.poolStats.lastBlockDate).format('DD/MM/YYYY, HH:MM:SS');
+        activeMiners.innerHTML = this.poolStats.status.miners
+        poolHash.innerHTML = _formatter(this.poolStats.hashrate.solo, 2, "H/s")
+        poolFee.innerHTML = timeToFind ? timeToFind: '-'
+        poolPaid.innerHTML = amountPaid + ' NEOX'
+
     })).subscribe()
   }
 
@@ -81,7 +96,7 @@ class Dashboard extends HTMLElement {
 
             display: grid;
             gap: 20px;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 1fr 1fr;
             grid-template-areas: 
             'card1 card2 card3 card4'
@@ -90,10 +105,10 @@ class Dashboard extends HTMLElement {
        div[class^="card"], div[class*=" card"] {
           align-items: center;
           justify-content: start;
-          gap: 25px;
+          gap: 10px;
           opacity: 1;
-          width: 100%;
-          height: 100%;
+          width: 200px;
+          height: 210px;
           display: flex;
           flex-direction: column;
           flex: 1;
@@ -105,6 +120,9 @@ class Dashboard extends HTMLElement {
           font-size: 20px;
           color: #999ba5;
        }
+        div[class^="card"] span div, div[class*=" card"] span div { 
+          color: #999ba5;        
+        }
        span {
         color: #3c3a3a;
        }
@@ -181,19 +199,19 @@ class Dashboard extends HTMLElement {
     </style>
       <div class="card1">
 
-        <h4>Network Difficulty</h4>
+        <h4>Network Diff</h4>
         <span class="Difficulty"><div id="networkDifficulty"></div></span>
 
       </div>
       <div class="card2">
       
-         <h4>Network Hash Rate</h4>
+         <h4>Network Hash</h4>
          <span class="Network"><div id="networkHashRate"></div></span>
                         
       </div>
       <div class="card3">
  
-        <h4>Blockchain Height</h4>
+        <h4>Current Effort</h4>
         <span class="Blockchain"><div id="networkBlockHeight"></div></span>
       </div>
       <div class="card4">
@@ -207,11 +225,11 @@ class Dashboard extends HTMLElement {
          <span><div id="activeMiners">0</div></span>
       </div>
       <div class="card6">
-        <h4>Pool Hash Rate</h4> 
+        <h4>Pool Hash</h4> 
         <span><div id="poolHashRate">0</div></span>
       </div>
       <div class="card7">
-         <h4>Pool Fee</h4>
+         <h4>TTF</h4>
           <span><div id="poolFee">0</div></span>
       </div>
       <div class="card8">

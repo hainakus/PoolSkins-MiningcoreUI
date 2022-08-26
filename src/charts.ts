@@ -10,7 +10,7 @@ export class Chart extends HTMLElement {
         <style>
          
         </style>
-      
+        <h3>HELLOO</h3>
     `
   }
   connectedCallback() {

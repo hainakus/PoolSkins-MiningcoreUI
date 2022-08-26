@@ -12,15 +12,19 @@ const config = {
   },
   entry: "./src/index.ts",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "ruby_server/public"),
   },
   devServer: {
     open: true,
     host: "localhost",
+    historyApiFallback: {
+      index: 'index.html'
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
+      baseUrl: '/'
     }),
     new CopyPlugin({
       patterns: [

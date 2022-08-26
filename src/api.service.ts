@@ -1,25 +1,25 @@
 import axios, { AxiosResponse } from "axios";
 import { defer, map, of } from "rxjs";
 
-axios.defaults.baseURL = 'https://marketcloudis.ml/api';
+axios.defaults.baseURL = 'http://neox-poolin.ml:3001/api/v1/Pool-Neoxa';
 
-export const minerList = () => defer( () => axios.get('/pools/clo1/miners')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const minerList = () => defer( () => axios.get('/miners')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const poolStats = () => defer( () => axios.get('/pools/clo1/performance')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const poolStats = () => defer( () => axios.get('/statistics')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const miner = (wallet: string) => defer( () => axios.get('/pools/clo1/miners/'+ wallet)).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const miner = (wallet: string) => defer( () => axios.get('/miners/'+ wallet)).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const statistics = () => defer( () => axios.get('/pools')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const statistics = () => defer( () => axios.get('/statistics')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
 
 
-export const getErgoPrice = () => {
+export const getCoinPrice = () => {
   const headers = {
     'Content-Type': 'application/json',
-    "X-CoinAPI-Key": "5A157120-8DB8-49B4-8A4D-1225B8F24EF4",
+    "x-api-key": "a38910e4-d5df-4d58-b481-5d2eab4cf7df",
   }
 
-  return defer(() => axios.get('https://rest.coinapi.io/v1/exchangerate/ERG/USD ', { headers })).pipe(map ((axiosResponse: AxiosResponse) => axiosResponse.data ))
+  return defer(() => axios.post('https://api.livecoinwatch.com/coins/single ', {"currency":"USD","code":"_NEOX","meta":true},{ headers })).pipe(map ((axiosResponse: AxiosResponse) => axiosResponse.data ))
 
 
 }

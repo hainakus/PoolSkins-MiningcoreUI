@@ -1,0 +1,11 @@
+Model Information:
+* title:	Robot Pack
+* source:	https://sketchfab.com/3d-models/robot-pack-978ce77a3d96468aafa6c44ce63df2c2
+* author:	gammi7186 (https://sketchfab.com/gammi7186)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Robot Pack" (https://sketchfab.com/3d-models/robot-pack-978ce77a3d96468aafa6c44ce63df2c2) by gammi7186 (https://sketchfab.com/gammi7186) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
