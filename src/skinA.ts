@@ -10,7 +10,6 @@ console.log("Hello World!");
 
 
 class SkinA extends HTMLElement {
-  private MTLFile: string = "assets/IndoorPotPlant/indoor plant_02_obj/indoor plant_02.mtl";
 
   constructor() {
     super();
@@ -49,7 +48,6 @@ class SkinA extends HTMLElement {
   connectedCallback() {
 
 
-    this.main();
     this.renderWorkersPartial();
     poolStats().pipe(tap((minersArray: any) => {
       minersArray.stats.forEach((minerData: { miner: string; }) =>
@@ -128,57 +126,13 @@ class SkinA extends HTMLElement {
           console.log("stats", stats);
           this.shadowRoot.querySelector("#pool").innerHTML = "";
           const poolHash = document.createElement("h1");
-          poolHash.innerText = "POOL HASHRATE " + _formatter(stats.body.primary.hashrate.solo, 2, "H/s");
+          poolHash.innerText = "POOL HASHRATE " + _formatter((stats.body.primary.hashrate.solo + stats.body.primary.hashrate.shared), 2, "H/s");
           this.shadowRoot.querySelector("#pool").append(poolHash);
         }))
       .subscribe();
 
   }
 
-
-  main() {
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.physicallyCorrectLights = true;
-    renderer.outputEncoding = THREE.sRGBEncoding;
-
-    //document.body.appendChild( renderer.domElement );
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-    hemiLight.position.set(0, 100, 0);
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(0, 100, 100);
-    scene.add(dirLight);
-
-
-    const geometry = new THREE.PlaneGeometry(1, 1, 1);
-
-    const material = new MeshPhysicalMaterial({
-      wireframe: true,
-      color: new Color().setStyle("red")
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-
-    scene.add(mesh);
-
-
-    camera.position.z = 100;
-
-    function animate() {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-  }
 
   html() {
     return `
@@ -412,6 +366,19 @@ class SkinA extends HTMLElement {
             max-height: 100vh;
             max-width: 100%;
         }
+            /* Small devices (portrait tablets and large phones, 600px and up) */
+          @media only screen and (min-width: 600px) {
+            .container {
+                  grid-template-areas: 
+            ". dash dash dash ."
+            "score dash dash dash ."
+            "score dash dash dash ."
+            "score dash dash dash ."
+            "score nav nav nav nav" 
+            ". footer footer footer footer";   
+            }
+            
+           }
         .score { 
         grid-area: score; }
         .card { 
@@ -489,7 +456,7 @@ class SkinA extends HTMLElement {
                         </div>
                       
                         <div class="pop-video">
-                            <img src="assets/page-title-img.png">
+                            <img width="50px" src="assets/page-title-img.png">
                         </div>
                   </div> 
                  

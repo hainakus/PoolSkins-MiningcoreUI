@@ -63,7 +63,7 @@ class Dashboard extends HTMLElement {
         this.poolStats = data.body.primary
 
           var _ttfNetHashRate = this.poolStats.network.hashrate;
-          var _ttfHashRate = this.poolStats.hashrate.solo;
+          var _ttfHashRate = this.poolStats.hashrate.shared;
         const timeToFind = readableSeconds(_ttfNetHashRate / _ttfHashRate * 60);
         const fee = data.body.primary.config.recipientFee * 100
         const amountPaid = Number(data.body.primary.payments.total).toFixed(2)
@@ -81,7 +81,7 @@ class Dashboard extends HTMLElement {
         heightBlock.innerHTML = data.body.primary.status.effort.toFixed(2)
         networkLastBlock.innerHTML = this.poolStats.status.luck.luck100 + '%'
         activeMiners.innerHTML = this.poolStats.status.miners
-        poolHash.innerHTML = _formatter(this.poolStats.hashrate.solo, 2, "H/s")
+        poolHash.innerHTML = _formatter((this.poolStats.hashrate.solo + this.poolStats.hashrate.shared), 2, "H/s")
         poolFee.innerHTML = timeToFind ? timeToFind: '-'
         poolPaid.innerHTML = amountPaid + ' NEOX'
 
@@ -93,6 +93,35 @@ class Dashboard extends HTMLElement {
   private html() {
     return ` 
     <style>
+        /* Extra small devices (phones, 600px and down) */
+          @media only screen and (max-width: 600px) {
+              
+          }
+          
+          /* Small devices (portrait tablets and large phones, 600px and up) */
+          @media only screen and (min-width: 600px) {
+              :host {
+                    grid-template-columns: 1fr 1fr !important;
+                    grid-template-rows: 1fr 1fr 1fr 1fr !important;
+                    grid-template-areas: 
+                    'card1 card2'
+                     'card3 card4'
+                    'card5 card6' 
+                    'card7 card8';
+        }
+               }
+          }
+          
+          /* Medium devices (landscape tablets, 768px and up) */
+          @media only screen and (min-width: 768px) {...}
+          
+          /* Large devices (laptops/desktops, 992px and up) */
+          @media only screen and (min-width: 992px) {...}
+          
+          /* Extra large devices (large laptops and desktops, 1200px and up) */
+          @media only screen and (min-width: 1200px) {...}
+    
+    
         :host {
             padding: 0 40px;
             top: 40px;
@@ -104,7 +133,7 @@ class Dashboard extends HTMLElement {
 
             display: grid;
             gap: 20px;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns:1fr 1fr 1fr 1fr;
             grid-template-rows: 1fr 1fr;
             grid-template-areas: 
             'card1 card2 card3 card4'
