@@ -446,7 +446,7 @@ class SkinA extends HTMLElement {
                   <div class="navigation">
                         <div class="buttons">   
                             <svg class="button-back" id="navBack" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
-                            <a href="" id="navForward"> <svg class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
+                            <a id="navForward"> <svg class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                         </div>
                       
                         <div class="pop-video">
