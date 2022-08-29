@@ -57,7 +57,7 @@ class SkinA extends HTMLElement {
   }
   connectedCallback() {
 
-    const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
+    const forward = this.shadowRoot.getElementById('navForward');
     forward.addEventListener('click',  (  ) =>  {
       (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
       axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
@@ -446,7 +446,7 @@ class SkinA extends HTMLElement {
                   <div class="navigation">
                         <div class="buttons">   
                             <svg class="button-back" id="navBack" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
-                            <a id="navForward"> <svg class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
+                            <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                         </div>
                       
                         <div class="pop-video">
