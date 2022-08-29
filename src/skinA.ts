@@ -61,7 +61,11 @@ class SkinA extends HTMLElement {
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
     (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
 
-
+    const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
+    forward.addEventListener('click',  ( ) =>  {
+      this.changePool()
+      window.dispatchEvent(new CustomEvent( 'togglePool'));
+    })
     this.shadowRoot.querySelector('.pop-video').addEventListener('click', () => {
       this.changePool();
       console.log(PoolService.getapi())
@@ -83,11 +87,7 @@ class SkinA extends HTMLElement {
 
       const navArray = [ 'miners' ]
       let index = - 1;
-      const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
-      forward.addEventListener('click',  ( ) =>  {
-          this.changePool()
-        window.dispatchEvent(new CustomEvent( 'togglePool'));
-      })
+
   }
 
   renderWorkersPartial() {
