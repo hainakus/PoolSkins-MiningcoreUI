@@ -56,14 +56,15 @@ class SkinA extends HTMLElement {
     window.dispatchEvent(new PopStateEvent('popstate'));
   }
   connectedCallback() {
-    (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
-    axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
-    const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
 
     const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
-    forward.addEventListener('click',  function(  )  {
-      (PoolService.getapi() === 'Pool-Neoxa') ? this.href= '/' : this.href = '/firo'
+    forward.addEventListener('click',  (  ) =>  {
+      (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
+      axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
+      const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
+      (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
+
+      (PoolService.getapi() === 'Pool-Neoxa') ? forward.href= '/' : forward.href = '/firo'
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     })
 
