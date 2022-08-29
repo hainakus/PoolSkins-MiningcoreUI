@@ -59,14 +59,15 @@ class SkinA extends HTMLElement {
 
     const forward = this.shadowRoot.getElementById('navForward');
     forward.addEventListener('click',  (  ) =>  {
-      (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
-      axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
-      const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-      (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
+      (PoolService.getapi() === 'Pool-Firocoin') ? this.navigate( '/') : this.navigate( '/firo');
 
-      (PoolService.getapi() === 'Pool-Firocoin') ? this.navigate( '/') : this.navigate( '/firo')
       window.dispatchEvent(new CustomEvent( 'togglePool'));
-    })
+    });
+
+    (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
+    axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
+    const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
+    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
 
 
     this.renderWorkersPartial();
@@ -80,8 +81,6 @@ class SkinA extends HTMLElement {
       toggle.classList.toggle("open-nav");
     });
 
-      const navArray = [ 'miners' ]
-      let index = - 1;
 
   }
 
