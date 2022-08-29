@@ -84,13 +84,13 @@ class SkinA extends HTMLElement {
       const navArray = [ 'miners' ]
       let index = - 1;
       const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
-      forward.addEventListener('click', function ( )  {
+      forward.addEventListener('click',  ( ) =>  {
           index++
           if(index > navArray.length - 1) {
-            this.href = '/'
+            this.navigate( '/')
             index = -1
           } else {
-            this.href = navArray[index]
+            this.navigate( '/firo')
           }
       })
   }
