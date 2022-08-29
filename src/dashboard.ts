@@ -39,56 +39,63 @@ class Dashboard extends HTMLElement {
   }
 
   connectedCallback() {
-    function readableSeconds(t: number) {
-      var seconds = Math.round(t);
-      var minutes = Math.floor(seconds/60);
-      var hours = Math.floor(minutes/60);
-      var days = Math.floor(hours/24);
-      hours = hours-(days*24);
-      minutes = minutes-(days*24*60)-(hours*60);
-      seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60);
-      if (isFinite(days) && days > 0) { return (days + "d " + hours + "h " + minutes + "m " + seconds + "s"); }
-      if (isFinite(hours) && hours > 0) { return (hours + "h " + minutes + "m " + seconds + "s"); }
-      if (isFinite(minutes) && minutes > 0) {return (minutes + "m " + seconds + "s"); }
-      return seconds ? (seconds + "s") : '-';
-    }
 
-    blocks().subscribe(data => {
-      const blocks = data.pending
-      this.blocks = blocks
+
+    this.populateCards();
+
+    window.addEventListener('togglePool', () => {
+        this.populateCards()
     })
-    statistics().pipe(tap( data => {
-      console.log('data',data.body.primary.status)
-        this.networkHashrate = data.body.primary
-        this.poolStats = data.body.primary
-
-          var _ttfNetHashRate = this.poolStats.network.hashrate;
-          var _ttfHashRate = this.poolStats.hashrate.shared;
-        const timeToFind = readableSeconds(_ttfNetHashRate / _ttfHashRate * 60);
-        const fee = data.body.primary.config.recipientFee * 100
-        const amountPaid = Number(data.body.primary.payments.total).toFixed(2)
-        const networkDifficulty = this.shadowRoot.querySelector('#networkDifficulty')
-        const networkHashrate = this.shadowRoot.querySelector('#networkHashRate')
-        const heightBlock = this.shadowRoot.querySelector('#networkBlockHeight')
-        const networkLastBlock = this.shadowRoot.querySelector('#networkLastBlock')
-        const activeMiners = this.shadowRoot.querySelector('#activeMiners')
-        const poolHash = this.shadowRoot.querySelector('#poolHashRate')
-        const poolFee = this.shadowRoot.querySelector('#poolFee')
-        const poolPaid = this.shadowRoot.querySelector('#poolPaid')
-
-        networkDifficulty.innerHTML = _formatter(this.poolStats.network.difficulty, 5, "H/s");
-        networkHashrate.innerHTML = _formatter(this.poolStats.network.hashrate, 5, "H/s");
-        heightBlock.innerHTML = data.body.primary.status.effort.toFixed(2)
-        networkLastBlock.innerHTML = this.poolStats.status.luck.luck100 + '%'
-        activeMiners.innerHTML = this.poolStats.status.miners
-        poolHash.innerHTML = _formatter((this.poolStats.hashrate.solo + this.poolStats.hashrate.shared), 2, "H/s")
-        poolFee.innerHTML = timeToFind ? timeToFind: '-'
-        poolPaid.innerHTML = amountPaid + ' NEOX'
-
-    })).subscribe()
+  }
+  readableSeconds(t: number) {
+    var seconds = Math.round(t);
+    var minutes = Math.floor(seconds/60);
+    var hours = Math.floor(minutes/60);
+    var days = Math.floor(hours/24);
+    hours = hours-(days*24);
+    minutes = minutes-(days*24*60)-(hours*60);
+    seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60);
+    if (isFinite(days) && days > 0) { return (days + "d " + hours + "h " + minutes + "m " + seconds + "s"); }
+    if (isFinite(hours) && hours > 0) { return (hours + "h " + minutes + "m " + seconds + "s"); }
+    if (isFinite(minutes) && minutes > 0) {return (minutes + "m " + seconds + "s"); }
+    return seconds ? (seconds + "s") : '-';
   }
 
+  private populateCards() {
+    blocks().subscribe(data => {
+      const blocks = data.pending;
+      this.blocks = blocks;
+    });
+    statistics().pipe(tap(data => {
+      console.log("data", data.body.primary.status);
+      this.networkHashrate = data.body.primary;
+      this.poolStats = data.body.primary;
 
+      var _ttfNetHashRate = this.poolStats.network.hashrate;
+      var _ttfHashRate = this.poolStats.hashrate.solo;
+      const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * 150);
+      const fee = data.body.primary.config.recipientFee * 100;
+      const amountPaid = Number(data.body.primary.payments.total).toFixed(2);
+      const networkDifficulty = this.shadowRoot.querySelector("#networkDifficulty");
+      const networkHashrate = this.shadowRoot.querySelector("#networkHashRate");
+      const heightBlock = this.shadowRoot.querySelector("#networkBlockHeight");
+      const networkLastBlock = this.shadowRoot.querySelector("#networkLastBlock");
+      const activeMiners = this.shadowRoot.querySelector("#activeMiners");
+      const poolHash = this.shadowRoot.querySelector("#poolHashRate");
+      const poolFee = this.shadowRoot.querySelector("#poolFee");
+      const poolPaid = this.shadowRoot.querySelector("#poolPaid");
+
+      networkDifficulty.innerHTML = _formatter(this.poolStats.network.difficulty, 5, "H/s");
+      networkHashrate.innerHTML = _formatter(this.poolStats.network.hashrate, 5, "H/s");
+      heightBlock.innerHTML = data.body.primary.status.effort.toFixed(2);
+      networkLastBlock.innerHTML = this.poolStats.status.luck.luck1 + "%";
+      activeMiners.innerHTML = this.poolStats.status.miners;
+      poolHash.innerHTML = _formatter((this.poolStats.hashrate.solo + this.poolStats.hashrate.shared), 2, "H/s");
+      poolFee.innerHTML = timeToFind ? timeToFind : "-";
+      poolPaid.innerHTML = amountPaid + " NEOX";
+
+    })).subscribe();
+  }
 
   private html() {
     return ` 

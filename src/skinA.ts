@@ -4,6 +4,8 @@ import * as THREE from "three";
 import { Color, MeshPhysicalMaterial } from "three";
 import { getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { _formatter, globalStore } from "./index";
+import { PoolService } from "./poolService";
+import axios from "axios";
 
 
 console.log("Hello World!");
@@ -44,25 +46,33 @@ class SkinA extends HTMLElement {
   set minerHashrate(value: any) {
     console.log(value);
   }
+  changePool() {
 
+
+    (PoolService.getapi() === 'Pool-Neoxa') ? this.navigate('/firo') : this.navigate('/')
+  }
+  navigate(url: string | URL) {
+    window.history.pushState({}, null, url);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }
   connectedCallback() {
+    (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
+    axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
+    const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
+    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
 
+
+    this.shadowRoot.querySelector('.pop-video').addEventListener('click', () => {
+      this.changePool();
+      console.log(PoolService.getapi())
+
+      window.dispatchEvent(new CustomEvent( 'togglePool'));
+
+    } )
 
     this.renderWorkersPartial();
-    poolStats().pipe(tap((minersArray: any) => {
-      minersArray.stats.forEach((minerData: { miner: string; }) =>
-        miner(minerData.miner).subscribe(e => this.minerHashrate = e)
-      );
-    }), map(data => data.stats.reverse()[0])).subscribe();
-    statistics().subscribe(e => {
-      this.blocks = e;
-      this.miners = e;
-    });
-    getCoinPrice().subscribe(e => this.coinPrice = e);
 
 
-    // const triggerBttn = this.shadowRoot.querySelector(".pop-video");
-    // const closeBttn = this.shadowRoot.querySelector(".close");
     const nav = this.shadowRoot.querySelector("nav");
     const toggle = this.shadowRoot.querySelector(".pop-video");
 
@@ -71,21 +81,6 @@ class SkinA extends HTMLElement {
       toggle.classList.toggle("open-nav");
     });
 
-    // const bg = this.shadowRoot.querySelector(".hero");
-    // const toggleOverlay = () => {
-    //
-    //   const overlay = this.shadowRoot.querySelector(".overlay");
-    //   if (overlay.className.split(" ").includes("open")) {
-    //     overlay.classList.remove("open");
-    //
-    //     bg.classList.remove("clear");
-    //
-    //   } else {
-    //     overlay.className += " open ";
-    //   }
-    // };
-    // triggerBttn.addEventListener("click", toggleOverlay);
-    // closeBttn.addEventListener("click", toggleOverlay);
       const navArray = [ 'miners' ]
       let index = - 1;
       const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
@@ -103,7 +98,16 @@ class SkinA extends HTMLElement {
   renderWorkersPartial() {
     const store = globalStore;
     const query = createQuery(store.store);
-
+    poolStats().pipe(tap((minersArray: any) => {
+      minersArray.stats.forEach((minerData: { miner: string; }) =>
+        miner(minerData.miner).subscribe(e => this.minerHashrate = e)
+      );
+    }), map(data => data.stats.reverse()[0])).subscribe();
+    statistics().subscribe(e => {
+      this.blocks = e;
+      this.miners = e;
+    });
+    getCoinPrice().subscribe(e => this.coinPrice = e);
     minerList()
       .pipe(tap(miners =>
         store.setState(miners)
@@ -456,7 +460,8 @@ class SkinA extends HTMLElement {
                         </div>
                       
                         <div class="pop-video">
-                            <img width="50px" src="assets/page-title-img.png">
+                            <img width="50px" class="pool-coin"
+                        src="assets/page-title-img.png">
                         </div>
                   </div> 
                  

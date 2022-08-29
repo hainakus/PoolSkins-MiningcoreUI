@@ -10,5 +10,14 @@ router.setRoutes([
       {path: '/miners', component: 'x-chart'},
       {path: '/users/:user', component: 'x-user-profile'},
     ]
+  },
+  {path: '/firo',
+    animate: true,
+    component: 'x-skin-a',
+    children: [
+      {path: '/', component: 'x-dash'},
+      {path: '/miners', component: 'x-chart'},
+      {path: '/users/:user', component: 'x-user-profile'},
+    ]
   }
 ]);
