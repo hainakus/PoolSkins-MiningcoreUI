@@ -86,6 +86,7 @@ class SkinA extends HTMLElement {
       const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
       forward.addEventListener('click',  ( ) =>  {
           this.changePool()
+        window.dispatchEvent(new CustomEvent( 'togglePool'));
       })
   }
 
