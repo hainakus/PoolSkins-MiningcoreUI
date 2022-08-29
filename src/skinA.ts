@@ -86,7 +86,7 @@ class SkinA extends HTMLElement {
       const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
       forward.addEventListener('click',  ( ) =>  {
           index++
-          if(index > navArray.length - 1) {
+          if(window.location.href.includes('firo')) {
             this.navigate( '/')
             index = -1
           } else {
