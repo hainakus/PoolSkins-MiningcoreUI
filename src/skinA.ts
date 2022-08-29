@@ -85,13 +85,7 @@ class SkinA extends HTMLElement {
       let index = - 1;
       const forward = this.shadowRoot.getElementById('navForward') as HTMLAnchorElement;
       forward.addEventListener('click',  ( ) =>  {
-          index++
-          if(window.location.href.includes('firo')) {
-            this.navigate( '/')
-            index = -1
-          } else {
-            this.navigate( '/firo')
-          }
+          this.changePool()
       })
   }
 
