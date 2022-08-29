@@ -66,13 +66,7 @@ class SkinA extends HTMLElement {
       this.changePool()
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     })
-    this.shadowRoot.querySelector('.pop-video').addEventListener('click', () => {
-      this.changePool();
-      console.log(PoolService.getapi())
 
-      window.dispatchEvent(new CustomEvent( 'togglePool'));
-
-    } )
 
     this.renderWorkersPartial();
 
