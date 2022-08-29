@@ -43,9 +43,7 @@ class Dashboard extends HTMLElement {
 
     this.populateCards();
 
-    window.addEventListener('togglePool', () => {
-        this.populateCards()
-    })
+
   }
   readableSeconds(t: number) {
     var seconds = Math.round(t);
@@ -70,10 +68,13 @@ class Dashboard extends HTMLElement {
       console.log("data", data.body.primary.status);
       this.networkHashrate = data.body.primary;
       this.poolStats = data.body.primary;
-
+      var ttf;
+      var coin;
+      (window.location.href.includes('firo')) ? ttf = 150 : ttf = 60;
+      (window.location.href.includes('firo')) ? coin = ' FIRO' : coin = ' NEOX';
       var _ttfNetHashRate = this.poolStats.network.hashrate;
       var _ttfHashRate = this.poolStats.hashrate.solo;
-      const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * 150);
+      const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf );
       const fee = data.body.primary.config.recipientFee * 100;
       const amountPaid = Number(data.body.primary.payments.total).toFixed(2);
       const networkDifficulty = this.shadowRoot.querySelector("#networkDifficulty");
@@ -92,7 +93,7 @@ class Dashboard extends HTMLElement {
       activeMiners.innerHTML = this.poolStats.status.miners;
       poolHash.innerHTML = _formatter((this.poolStats.hashrate.solo + this.poolStats.hashrate.shared), 2, "H/s");
       poolFee.innerHTML = timeToFind ? timeToFind : "-";
-      poolPaid.innerHTML = amountPaid + " NEOX";
+      poolPaid.innerHTML = amountPaid + coin;
 
     })).subscribe();
   }
