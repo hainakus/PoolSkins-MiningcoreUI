@@ -64,7 +64,7 @@ class SkinA extends HTMLElement {
       const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
       (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
 
-      (PoolService.getapi() === 'Pool-Neoxa') ? forward.href= '/' : forward.href = '/firo'
+      (PoolService.getapi() === 'Pool-Neoxa') ? this.navigate( '/') : this.navigate( '/firo')
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     })
 
