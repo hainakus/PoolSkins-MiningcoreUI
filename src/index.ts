@@ -7,7 +7,7 @@ import './search'
 import './charts'
 import './skinA';
 import './dashboard'
-
+import './connect-stratum'
 
 export const _formatter = (value: number, decimal: number, unit: string) => {
   if (value === 0) {

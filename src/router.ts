@@ -7,6 +7,7 @@ router.setRoutes([
     component: 'x-skin-a',
     children: [
       {path: '/', component: 'x-dash'},
+      {path: '/connect', component: 'x-connect'},
       {path: '/miners', component: 'x-chart'},
       {path: '/users/:user', component: 'x-user-profile'},
     ]
@@ -16,6 +17,7 @@ router.setRoutes([
     component: 'x-skin-a',
     children: [
       {path: '/', component: 'x-dash'},
+      {path: '/connect', component: 'x-connect'},
       {path: '/miners', component: 'x-chart'},
       {path: '/users/:user', component: 'x-user-profile'},
     ]

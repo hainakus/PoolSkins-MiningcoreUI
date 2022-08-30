@@ -130,7 +130,11 @@ class SkinA extends HTMLElement {
   html() {
     return `
    <style>
-   
+        a {
+          text-decoration: none;
+          color: #999ba5;
+        }
+        
         #c {
             width: 100vw;
             height: 100vh;
@@ -259,6 +263,14 @@ class SkinA extends HTMLElement {
             }
             .buttons {
                 flex: 1;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 20px;
+                color: #666;
+                font-size: 18px;
+                  font-weight: bold;
             }
               .pop-video {
               display: flex;
@@ -343,35 +355,29 @@ class SkinA extends HTMLElement {
         .container {
           padding: 0px 20px 0px 20px;
           display: grid; 
-          grid-template-columns: 1fr 1fr 1fr 1fr 1fr; 
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; 
           grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr; 
           gap: 50px; 
           grid-template-areas: 
-            ". dash dash dash dash"
-            "score dash dash dash dash"
-            "score dash dash dash dash"
-            "score . . . ."
-            "score nav nav nav nav" 
-            ". footer footer footer footer"; 
+            ". . dash dash dash dash"
+            "score . dash dash dash dash"
+            "score . dash dash dash dash"
+            "score . . . . ."
+            ". . . . . ."
+            ". . footer footer footer footer"; 
             justify-items: self-start;
             margin-left: 40px;
             top: 60px;
             max-height: 100vh;
             max-width: 100%;
         }
-            /* Small devices (portrait tablets and large phones, 600px and up) */
-          @media only screen and (min-width: 600px) {
-            .container {
-                  grid-template-areas: 
-            ". dash dash dash ."
-            "score dash dash dash ."
-            "score dash dash dash ."
-            "score dash dash dash ."
-            "score nav nav nav nav" 
-            ". footer footer footer footer";   
-            }
-            
-           }
+        
+        .finder {
+          grid-area: finder;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+        }   
         .score { 
         grid-area: score; }
         .card { 
@@ -435,6 +441,10 @@ class SkinA extends HTMLElement {
           font-size: 2em;
           margin: 0.5em 2em;
         }
+        x-search {
+          align-self: center;
+          justify-self: center;
+        }
     </style>
 
 
@@ -446,12 +456,17 @@ class SkinA extends HTMLElement {
                         <div class="buttons">   
                             <svg class="button-back" id="navBack" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
                             <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
+                   
+                          <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/connect"><span>Stratum Connect</span></a>
+                          <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/wallet" ><span>Wallet</span></a>
+                
                         </div>
                       
                         <div class="pop-video">
                             <img width="50px" class="pool-coin"
                         src="assets/page-title-img.png">
                         </div>
+                    
                   </div> 
                  
                   </nav>
@@ -477,12 +492,14 @@ class SkinA extends HTMLElement {
                         <p id="blocks"></p>  Blocks
                         ${ window.location.href.includes('firo') ? 'FIRO' : 'NEOX'}  
                         <p id="price"></p> USD
+                      
                       </div>
-                       
+                      
               <div class="center-content">
+            
 <!--                 <a href="#" class="button play-btn">ERGO POOL</a>-->
                 <h1 class="image-mask"><slot name="title"><div id="pool"></div> </slot></h1>
-                <h3>Pool Fee 5%, SOLO/PROP</h3>
+                <h3>Pool Fee 0.2%, SOLO/PROP</h3>
                 <div class="footer">
                    <a href="https://t.me/LocalFiroBot">
                        

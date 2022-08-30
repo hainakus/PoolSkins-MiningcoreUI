@@ -70,10 +70,13 @@ class Dashboard extends HTMLElement {
       this.poolStats = data.body.primary;
       var ttf;
       var coin;
+
       (window.location.href.includes('firo')) ? ttf = 150 : ttf = 60;
       (window.location.href.includes('firo')) ? coin = ' FIRO' : coin = ' NEOX';
       var _ttfNetHashRate = this.poolStats.network.hashrate;
-      var _ttfHashRate = this.poolStats.hashrate.solo;
+      var _ttfHashRate = this.poolStats.hashrate.shared;
+      console.log(_ttfHashRate)
+    //  _ttfHashRate = 46992853600.7466667
       const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf );
       const fee = data.body.primary.config.recipientFee * 100;
       const amountPaid = Number(data.body.primary.payments.total).toFixed(2);
@@ -135,7 +138,7 @@ class Dashboard extends HTMLElement {
             top: 40px;
            
             height: 100%;
-            width: 80%;
+            width: 800px;
             position: relative;
             z-index: 1;
 
