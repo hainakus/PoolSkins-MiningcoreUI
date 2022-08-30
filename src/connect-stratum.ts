@@ -48,7 +48,7 @@ export class ConnectStratum extends HTMLElement {
         </style>
         <div class="">
         <h1>STRATUM CONNECT FOR ${window.location.pathname === '/' ? 'NEOX': 'FIRO'}</h1>
-            ${window.location.pathname === '/' ? this.renderNeox() : this.renderFiro() }
+            ${!window.location.pathname.includes('firo') ? this.renderNeox() : this.renderFiro() }
         </div>
     `
   }

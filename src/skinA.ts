@@ -64,7 +64,7 @@ class SkinA extends HTMLElement {
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     });
 
-    (window.location.pathname === '/') ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
+    (!window.location.pathname.includes('firo')) ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
     axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
     (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
