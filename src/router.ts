@@ -21,5 +21,6 @@ router.setRoutes([
       {path: '/miners', component: 'x-chart'},
       {path: '/users/:user', component: 'x-user-profile'},
     ]
-  }
+  },
+  {path: '(.*)', component: 'x-not-found'},
 ]);

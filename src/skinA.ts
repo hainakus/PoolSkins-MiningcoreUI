@@ -367,6 +367,7 @@ class SkinA extends HTMLElement {
             ". . footer footer footer footer"; 
             justify-items: self-start;
             margin-left: 40px;
+            margin-right: 40px;
             top: 60px;
             max-height: 100vh;
             max-width: 100%;
