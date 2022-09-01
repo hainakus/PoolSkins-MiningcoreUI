@@ -129,7 +129,8 @@ class SkinA extends HTMLElement {
 
   html() {
     return `
-   <style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />   <style>
+
         a {
           text-decoration: none;
           color: #999ba5;
@@ -262,7 +263,7 @@ class SkinA extends HTMLElement {
               fill: #FFF;
             }
             .buttons {
-                flex: 1;
+                
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
@@ -446,6 +447,45 @@ class SkinA extends HTMLElement {
           align-self: center;
           justify-self: center;
         }
+        
+        .far,.fa-solid {
+  font-size: 2rem;
+}
+
+.button {
+  font-weight: bold;
+  color: gray;
+  cursor: pointer;
+  margin: 1rem;
+  position: relative;
+   width: 40px;
+  height: 40px; 
+  padding: 15px;
+  background: #f1f3f6;
+  border-radius: 999px;
+  box-shadow: 
+    inset 0 0 5px rgba(55, 84, 170, 0), 
+    inset 0 0 10px rgba(255, 255, 255, 0), 
+    5px 5px 9px rgba(55, 84, 170, 0.15), 
+    -5px -5px 11px white, 
+    inset 0px 0px 2px rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  border: none;
+}
+
+.button:focus, .button:hover {
+  color: black;
+}
+
+.button:focus,
+.button:active {
+  box-shadow: inset 4px 4px 7px rgba(55, 84, 170, 0.15), inset -4px -4px 10px white, 0px 0px 2px rgba(255, 255, 255, 0.2);
+}
+
     </style>
 
 
@@ -458,15 +498,28 @@ class SkinA extends HTMLElement {
                             <svg class="button-back" id="navBack" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
                             <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                    
-                          <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/connect"><span>Stratum Connect</span></a>
-                          <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/wallet" ><span>Wallet</span></a>
-                
-                        </div>
-                      
-                        <div class="pop-video">
+                     
+                           <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/connect"> <button class='button' type='button'>
+                              <i class="fa-solid fa-circle-nodes"></i>
+                            </button>
+                            </a>
+                           <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/wallet" >
+                            <button class='button' type='button'>
+                              <i class="fa-solid fa-wallet"></i>
+                            </button>
+                            </a>
+                              <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/payments" >
+                            <button class='button' type='button'>
+                              <i class="fa-solid fa-money-bill"></i>
+                            </button>
+                            </a>
+                              <div class="pop-video">
                             <img width="50px" class="pool-coin"
                         src="assets/page-title-img.png">
                         </div>
+                        </div>
+                      
+                      
                     
                   </div> 
                  

@@ -1,6 +1,4 @@
-import { PoolService } from "./poolService";
-
-export class ConnectStratum extends HTMLElement {
+export class Payments extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({mode: 'open'})
@@ -49,8 +47,8 @@ export class ConnectStratum extends HTMLElement {
           }
         </style>
         <div class="">
-        <h1>STRATUM CONNECT FOR ${ PoolService.getapi().toLowerCase().includes('neox') ? 'NEOX': 'FIRO'}</h1>
-            ${ PoolService.getapi().toLowerCase().includes('neox') ? this.renderNeox() : this.renderFiro() }
+        <h1>STRATUM CONNECT FOR ${window.location.pathname === '/' ? 'NEOX': 'FIRO'}</h1>
+            ${!window.location.pathname.includes('firo') ? this.renderNeox() : this.renderFiro() }
         </div>
     `
   }
@@ -59,4 +57,4 @@ export class ConnectStratum extends HTMLElement {
   }
 }
 
-customElements.define('x-connect', ConnectStratum);
+customElements.define('x-payments', Payments);

@@ -8,8 +8,8 @@ router.setRoutes([
     children: [
       {path: '/', component: 'x-dash'},
       {path: '/connect', component: 'x-connect'},
-      {path: '/miners', component: 'x-chart'},
-      {path: '/users/:user', component: 'x-user-profile'},
+      {path: '/wallet', component: 'x-chart'},
+      {path: '/payments', component: 'x-payments'},
     ]
   },
   {path: '/firo',
@@ -18,8 +18,8 @@ router.setRoutes([
     children: [
       {path: '/', component: 'x-dash'},
       {path: '/connect', component: 'x-connect'},
-      {path: '/miners', component: 'x-chart'},
-      {path: '/users/:user', component: 'x-user-profile'},
+      {path: '/wallet', component: 'x-chart'},
+      {path: '/payments', component: 'x-payments'},
     ]
   },
   {path: '(.*)', component: 'x-not-found'},

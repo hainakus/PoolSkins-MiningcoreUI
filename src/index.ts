@@ -2,12 +2,14 @@
 
 console.log("Hello World!");
 import { MarketStore } from "./store";
+import './style.scss'
 import './router';
 import './search'
 import './charts'
 import './skinA';
 import './dashboard'
 import './connect-stratum'
+import './payments'
 import './not-found'
 
 export const _formatter = (value: number, decimal: number, unit: string) => {
