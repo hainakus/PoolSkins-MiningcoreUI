@@ -10,7 +10,7 @@ export const minerList = () => defer( () => axios.get('/miners')).pipe(map( (axi
 
 export const poolStats = () => defer( () => axios.get('/statistics')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const miner = (wallet: string) => defer( () => axios.get('/miners/'+ wallet)).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const miner = (wallet: string) => defer( () => axios.get('/miners?method='+ wallet)).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
 export const statistics = () => defer( () => axios.get('/statistics')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 

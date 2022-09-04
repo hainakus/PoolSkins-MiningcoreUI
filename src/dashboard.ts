@@ -76,7 +76,7 @@ class Dashboard extends HTMLElement {
       var _ttfNetHashRate = this.poolStats.network.hashrate;
       var _ttfHashRate = this.poolStats.hashrate.shared;
       console.log(_ttfHashRate)
-    //  _ttfHashRate = 46992853600.7466667
+      // _ttfHashRate = 46992853600.7466667
       const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf );
       const fee = data.body.primary.config.recipientFee * 100;
       const amountPaid = Number(data.body.primary.payments.total).toFixed(2);
