@@ -1,41 +1,71 @@
+import { payments } from "./api.service";
+import { tap } from "rxjs";
+
 export class Payments extends HTMLElement {
+  private _pay: any;
+
+  set payments(value:any) {
+    this._pay = value;
+  }
+
+  get payments() {
+    return this._pay;
+  }
   constructor() {
     super();
     this.attachShadow({mode: 'open'})
-    this.shadowRoot.innerHTML = this.html()
+
 
 
   }
   renderFiro() {
-    return ` <pre><h3>T-REX</h3>
-        <code>
-          ./t-rex -a FiroPow -o stratum+tcp://neox-poolin.ml:3008 -u WALLET.WORKERNAME -p YourPassword
-        </code>
-        </pre>
-         <pre><h3>G-Miner</h3>
-        <code>
-         ./miner -a FiroPow -s neox-poolin.ml:3008 -u WALLET.WORKERNAME -p YourPassword
-        </code>
-        </pre>`
+    let html: string = '';
+    Object.entries(this.payments.immature).forEach( ([miner, tobePaid]) => {
+
+      console.log(this.payments)
+      html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} to be paid FIRO</td></tr>`;
+      console.log(html)
+
+    })
+    this.shadowRoot.querySelector('#tobePaid').innerHTML = html;
+
+    html = '';
+    Object.entries(this.payments.paid).forEach( ([miner, tobePaid]) => {
+
+      console.log(this.payments)
+      html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} paid FIRO</td></tr>`;
+      console.log(html)
+
+    })
+    this.shadowRoot.querySelector('#paid').innerHTML = html;
   }
   renderNeox() {
-    return ` <pre><h3>T-REX</h3>
-        <code>
-          ./t-rex -a kawpow -o stratum+tcp://neox-poolin.ml:3305 -u WALLET.WORKERNAME -p YourPassword
-        </code>
-        </pre>
-         <pre><h3>G-Miner</h3>
-        <code>
-         ./miner -a kawpow -s neox-poolin.ml:3305 -u WALLET.WORKERNAME -p YourPassword
-        </code>
-        </pre>`
+    let html: string = '';
+     Object.entries(this.payments.immature).forEach( ([miner, tobePaid]) => {
+
+      console.log(this.payments)
+       html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} to be paid NEOX</td></tr>`;
+       console.log(html)
+
+    })
+    this.shadowRoot.querySelector('#tobePaid').innerHTML = html;
+
+    html = '';
+    Object.entries(this.payments.paid).forEach( ([miner, tobePaid]) => {
+
+      console.log(this.payments)
+      html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} paid NEOX</td></tr>`;
+      console.log(html)
+
+    })
+    this.shadowRoot.querySelector('#paid').innerHTML = html;
   }
   html() {
     return `
         <style>
-          h3,h1, code {
+          * {
               color: #999ba5;
-              font-size: larger;
+              font-size: small;
           }
           :host {
             margin-top: 40px;
@@ -45,14 +75,38 @@ export class Payments extends HTMLElement {
             flex-direction: row;
             margin-top: 40px;
           }
+          table {
+            margin-bottom: 50px;
+          }
+          table, th, td {
+          border: 1px solid white;
+          }
         </style>
         <div class="">
-        <h1>STRATUM CONNECT FOR ${window.location.pathname === '/' ? 'NEOX': 'FIRO'}</h1>
-            ${!window.location.pathname.includes('firo') ? this.renderNeox() : this.renderFiro() }
+        <h1>PAYMENTS FOR ${window.location.pathname.includes('firo') ?  'FIRO': 'NEOX' }</h1>
+        <table>
+            <tbody id="tobePaid">
+            
+            </tbody>
+  
+          
+            </table>
+            
+              <table>
+            <tbody id="paid">
+            
+            </tbody>
+  
+          
+            </table>
         </div>
     `
   }
   connectedCallback() {
+    payments().pipe(tap ( payments => this.payments = payments)).subscribe(_=>  {
+      this.shadowRoot.innerHTML = this.html();
+      (window.location.pathname.includes('firo')) ? this.renderFiro(): this.renderNeox();
+    })
 
   }
 }

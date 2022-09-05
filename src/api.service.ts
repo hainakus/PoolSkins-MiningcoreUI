@@ -16,7 +16,7 @@ export const statistics = () => defer( () => axios.get('/statistics')).pipe(map(
 
 export const blocks = () => defer( () => axios.get('/blocks')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data.body.primary ))
 
-
+export const payments = () => defer(() => axios.get('/payments')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data.body.primary ))
 
 export const getCoinPrice = () => {
   const headers = {
