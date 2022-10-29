@@ -1,5 +1,5 @@
 export namespace PoolService {
-  let base_url = 'Pool-Neoxa';
+  let base_url = 'ethone1';
   export const setApi = (value:string) => {
     base_url = value
   }

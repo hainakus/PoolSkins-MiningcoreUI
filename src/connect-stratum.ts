@@ -49,7 +49,7 @@ export class ConnectStratum extends HTMLElement {
           }
         </style>
         <div class="">
-        <h1>STRATUM CONNECT FOR ${ PoolService.getapi().toLowerCase().includes('neox') ? 'NEOX': 'FIRO'}</h1>
+        <h1>STRATUM CONNECT FOR ${ PoolService.getapi().toLowerCase().includes('etherone') ? 'ETHERONE': 'FIRO'}</h1>
             ${ PoolService.getapi().toLowerCase().includes('neox') ? this.renderNeox() : this.renderFiro() }
         </div>
     `
