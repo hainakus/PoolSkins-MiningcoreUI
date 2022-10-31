@@ -1,5 +1,5 @@
 export namespace PoolService {
-  let base_url = 'octa';
+  let base_url = 'ethone';
   export const setApi = (value:string) => {
     base_url = value
   }

@@ -49,7 +49,7 @@ class SkinA extends HTMLElement {
   changePool() {
 
 
-    (PoolService.getapi() === 'octa') ? this.navigate('/firo') : this.navigate('/')
+    (PoolService.getapi() === 'ethone') ? this.navigate('/firo') : this.navigate('/')
   }
   navigate(url: string | URL) {
     window.history.pushState({}, null, url);
@@ -64,10 +64,10 @@ class SkinA extends HTMLElement {
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     });
 
-    (!window.location.pathname.includes('firo')) ? PoolService.setApi('octa') : PoolService.setApi('Pool-Firocoin');
-    axios.defaults.baseURL = 'http://localhost:8080/' + PoolService.getapi();
+    (!window.location.pathname.includes('firo')) ? PoolService.setApi('ethone') : PoolService.setApi('Pool-Firocoin');
+    axios.defaults.baseURL = 'http://marketcloudis.ml:8080/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/octaspace.webp';
+    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/etherone_logo.png';
 
 
     this.renderWorkersPartial();
@@ -249,8 +249,7 @@ class SkinA extends HTMLElement {
             .pop-video {
               border-radius: 50px;
               background: var(--theme-bg-color);
-              box-shadow: inset 5px 5px 13px #cacaca,
-                          inset -5px -5px 13px #f6f6f6;
+ 
             }
             .pop-video img {
                  cursor: pointer;
@@ -509,7 +508,7 @@ class SkinA extends HTMLElement {
                             </a>
                               <div class="pop-video">
                             <img width="50px" class="pool-coin"
-                        src="assets/page-title-img.png">
+                        src="assets/etherone_logo.png">
                         </div>
                         </div>
                       
@@ -538,7 +537,7 @@ class SkinA extends HTMLElement {
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
-                        ${ window.location.href.includes('firo') ? 'FIRO' : 'OCTA'}  
+                        ${ window.location.href.includes('firo') ? 'FIRO' : 'ETHONE'}  
                         <p id="price"></p> USD
                       
                       </div>
