@@ -2,7 +2,7 @@ import { createQuery } from "@datorama/akita";
 import { map, tap } from "rxjs";
 import * as THREE from "three";
 import { Color, MeshPhysicalMaterial } from "three";
-import { getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
+import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { _formatter, globalStore } from "./index";
 import { PoolService } from "./poolService";
 import axios from "axios";
@@ -32,11 +32,11 @@ class SkinA extends HTMLElement {
   set miners(value: any) {
     console.log(value);
     this._miners = value;
-    this.shadowRoot.querySelector("#miners").innerHTML = value.body.primary.status.miners;
+    this.shadowRoot.querySelector("#miners").innerHTML = value;
   }
 
   set blocks(value: any) {
-    this.shadowRoot.querySelector("#blocks").innerHTML = value.body.primary.blocks.valid;
+    this.shadowRoot.querySelector("#blocks").innerHTML = value.result.length;
   }
 
   set coinPrice(value: any) {
@@ -49,7 +49,7 @@ class SkinA extends HTMLElement {
   changePool() {
 
 
-    (PoolService.getapi() === 'Pool-Neoxa') ? this.navigate('/firo') : this.navigate('/')
+    (PoolService.getapi() === 'octa') ? this.navigate('/firo') : this.navigate('/')
   }
   navigate(url: string | URL) {
     window.history.pushState({}, null, url);
@@ -64,10 +64,10 @@ class SkinA extends HTMLElement {
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     });
 
-    (!window.location.pathname.includes('firo')) ? PoolService.setApi('Pool-Neoxa') : PoolService.setApi('Pool-Firocoin');
-    axios.defaults.baseURL = 'https://neox-poolin.ml/api/v1/' + PoolService.getapi();
+    (!window.location.pathname.includes('firo')) ? PoolService.setApi('octa') : PoolService.setApi('Pool-Firocoin');
+    axios.defaults.baseURL = 'http://localhost:8080/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/page-title-img.png';
+    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/octaspace.webp';
 
 
     this.renderWorkersPartial();
@@ -87,14 +87,12 @@ class SkinA extends HTMLElement {
   renderWorkersPartial() {
     const store = globalStore;
     const query = createQuery(store.store);
-    poolStats().pipe(tap((minersArray: any) => {
-      minersArray.stats.forEach((minerData: { miner: string; }) =>
-        miner(minerData.miner).subscribe(e => this.minerHashrate = e)
-      );
-    }), map(data => data.stats.reverse()[0])).subscribe();
-    statistics().subscribe(e => {
+    poolStats().pipe(tap((data: any) => {
+      this.miners = data.miners;
+    })).subscribe()
+    blocks().subscribe(e => {
       this.blocks = e;
-      this.miners = e;
+
     });
     getCoinPrice().subscribe(e => this.coinPrice = e);
     minerList()
@@ -103,23 +101,23 @@ class SkinA extends HTMLElement {
       ))
       .subscribe();
 
-    query.select(state => state).pipe(tap((data: any) => {
-      this.shadowRoot.querySelector("ul.miners").innerHTML = "";
-      data.miners.forEach((mine: any) => {
-        const li = document.createElement("li");
-        miner(mine.miner).subscribe(e => this.minerHashrate = e);
-        li.innerHTML = mine.miner + "  " + this.getReadableHashRateString(mine.hashrate);
-
-        this.shadowRoot.querySelector("ul.miners").append(li);
-      });
-    })).subscribe();
+    // query.select(state => state).pipe(tap((data: any) => {
+    //   this.shadowRoot.querySelector("ul.miners").innerHTML = "";
+    //   data.miners.forEach((mine: any) => {
+    //     const li = document.createElement("li");
+    //     miner(mine.miner).subscribe(e => this.minerHashrate = e);
+    //     li.innerHTML = mine.miner + "  " + this.getReadableHashRateString(mine.hashrate);
+    //
+    //     this.shadowRoot.querySelector("ul.miners").append(li);
+    //   });
+    // })).subscribe();
     poolStats()
       .pipe(
         tap(stats => {
           console.log("stats", stats);
           this.shadowRoot.querySelector("#pool").innerHTML = "";
           const poolHash = document.createElement("h1");
-          poolHash.innerText = "POOL HASHRATE " + _formatter((stats.body.primary.hashrate.solo + stats.body.primary.hashrate.shared), 2, "H/s");
+          poolHash.innerText = "POOL HASHRATE " + _formatter((stats.hashrate), 2, "H/s");
           this.shadowRoot.querySelector("#pool").append(poolHash);
         }))
       .subscribe();
@@ -250,7 +248,7 @@ class SkinA extends HTMLElement {
             }
             .pop-video {
               border-radius: 50px;
-              background: #e0e0e0;
+              background: var(--theme-bg-color);
               box-shadow: inset 5px 5px 13px #cacaca,
                           inset -5px -5px 13px #f6f6f6;
             }
@@ -260,7 +258,7 @@ class SkinA extends HTMLElement {
                    transform: scale(0.87);
             }
             .pop-video.open-nav svg path, .pop-video.open-nav svg polygon {
-              fill: #FFF;
+              fill: var(--theme-bg-color);
             }
             .buttons {
                 
@@ -454,21 +452,16 @@ class SkinA extends HTMLElement {
 
 .button {
   font-weight: bold;
-  color: gray;
+  color: white;
   cursor: pointer;
   margin: 1rem;
   position: relative;
    width: 40px;
   height: 40px; 
   padding: 15px;
-  background: #f1f3f6;
+  background: var(--theme-bg-color);
   border-radius: 999px;
-  box-shadow: 
-    inset 0 0 5px rgba(55, 84, 170, 0), 
-    inset 0 0 10px rgba(255, 255, 255, 0), 
-    5px 5px 9px rgba(55, 84, 170, 0.15), 
-    -5px -5px 11px white, 
-    inset 0px 0px 2px rgba(255, 255, 255, 0.2);
+  box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
   transition: box-shadow 0.2s ease-in-out;
   display: flex;
   align-items: center;
@@ -483,7 +476,8 @@ class SkinA extends HTMLElement {
 
 .button:focus,
 .button:active {
-  box-shadow: inset 4px 4px 7px rgba(55, 84, 170, 0.15), inset -4px -4px 10px white, 0px 0px 2px rgba(255, 255, 255, 0.2);
+  background-color: var(--theme-bg-color);
+   box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
 }
 
     </style>
@@ -544,7 +538,7 @@ class SkinA extends HTMLElement {
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
-                        ${ window.location.href.includes('firo') ? 'FIRO' : 'NEOX'}  
+                        ${ window.location.href.includes('firo') ? 'FIRO' : 'OCTA'}  
                         <p id="price"></p> USD
                       
                       </div>

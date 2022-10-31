@@ -1,5 +1,5 @@
 
-import { statistics, blocks } from "./api.service";
+import { statistics, blocks, payments } from "./api.service";
 import { pipe, tap } from "rxjs";
 import * as  moment from "moment";
 import { _formatter } from "./index";
@@ -10,10 +10,10 @@ class Dashboard extends HTMLElement {
   private _poolStats: any;
   private _blocks: any;
 
-  set networkHashrate(value) {
+  set payments(value) {
       this._networkHashrate = value
   }
-  get networkHashrate() {
+  get payments() {
     return this._networkHashrate;
   }
   set poolStats(value) {
@@ -60,26 +60,31 @@ class Dashboard extends HTMLElement {
   }
 
   private populateCards() {
+    payments().subscribe( payment => {
+        this.payments = payment.reduce( (paymnts:any, val:any) => {
+         return  val.amount / 100000000000000000
+        }, 0)
+    })
     blocks().subscribe(data => {
-      const blocks = data.pending;
-      this.blocks = blocks;
+      const blocks = data;
+      this.blocks = blocks.result.length;
     });
     statistics().pipe(tap(data => {
-      console.log("data", data.body.primary.status);
-      this.networkHashrate = data.body.primary;
-      this.poolStats = data.body.primary;
+      console.log("data", data);
+
+      this.poolStats = data;
       var ttf;
       var coin;
 
-      (window.location.href.includes('firo')) ? ttf = 150 : ttf = 60;
-      (window.location.href.includes('firo')) ? coin = ' FIRO' : coin = ' NEOX';
+      (window.location.href.includes('firo')) ? ttf = 150 : ttf = 15;
+      (window.location.href.includes('firo')) ? coin = ' FIRO' : coin = ' OCTA';
       var _ttfNetHashRate = this.poolStats.network.hashrate;
-      var _ttfHashRate = this.poolStats.hashrate.shared;
+      var _ttfHashRate = this.poolStats.hashrate;
       console.log(_ttfHashRate)
       // _ttfHashRate = 46992853600.7466667
       const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf );
-      const fee = data.body.primary.config.recipientFee * 100;
-      const amountPaid = Number(data.body.primary.payments.total).toFixed(2);
+     // const fee = data.body.primary.config.recipientFee * 100;
+      const amountPaid = Number(data).toFixed(2);
       const networkDifficulty = this.shadowRoot.querySelector("#networkDifficulty");
       const networkHashrate = this.shadowRoot.querySelector("#networkHashRate");
       const heightBlock = this.shadowRoot.querySelector("#networkBlockHeight");
@@ -91,12 +96,12 @@ class Dashboard extends HTMLElement {
 
       networkDifficulty.innerHTML = _formatter(this.poolStats.network.difficulty, 5, "H/s");
       networkHashrate.innerHTML = _formatter(this.poolStats.network.hashrate, 5, "H/s");
-      heightBlock.innerHTML = data.body.primary.status.effort.toFixed(2);
-      networkLastBlock.innerHTML = this.poolStats.status.luck.luck1 + "%";
-      activeMiners.innerHTML = this.poolStats.status.miners;
-      poolHash.innerHTML = _formatter((this.poolStats.hashrate.solo + this.poolStats.hashrate.shared), 2, "H/s");
+      heightBlock.innerHTML = data;
+      networkLastBlock.innerHTML = (Number(timeToFind.split('m')[0]) / 1440 * this.blocks * 100).toFixed(2) + "%";
+      activeMiners.innerHTML = this.poolStats.miners;
+      poolHash.innerHTML = _formatter(this.poolStats.hashrate, 2, "H/s");
       poolFee.innerHTML = timeToFind ? timeToFind : "-";
-      poolPaid.innerHTML = amountPaid + coin;
+      poolPaid.innerHTML = this.payments + coin;
 
     })).subscribe();
   }
@@ -162,9 +167,9 @@ class Dashboard extends HTMLElement {
           flex: 1;
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          background: #EEF0F4;
+          background: rgb(42 46 60);
           border-radius: 15%;
-          box-shadow: 9.91px 9.91px 15px #D9DADE, -9.91px -9.91px 15px #FFFFFF;
+          box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
           font-size: 20px;
           color: #999ba5;
        }
