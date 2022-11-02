@@ -1,8 +1,10 @@
 
 import { statistics, blocks, payments } from "./api.service";
-import { pipe, tap } from "rxjs";
+import { filter, pipe, tap } from "rxjs";
 import * as  moment from "moment";
 import { _formatter } from "./index";
+import { store } from "./ws.service";
+import { MarketStoreState } from "./store";
 
 
 class Dashboard extends HTMLElement {
@@ -60,26 +62,30 @@ class Dashboard extends HTMLElement {
   }
 
   private populateCards() {
-    payments().subscribe( payment => {
+    payments().subscribe( (payment:any) => {
         this.payments = payment.reduce( (paymnts:any, val:any) => {
-         return  val.amount / 100000000000000000
+           paymnts += val.amount / 1000000000000000000
+          return paymnts
         }, 0)
     })
     blocks().subscribe(data => {
       const blocks = data;
       this.blocks = blocks.result.length;
     });
-    statistics().pipe(tap(data => {
+    store.query.select().pipe(filter(e => !!e), tap((data:any) => {
+     
+
+    })).subscribe( (data:MarketStoreState) => {
       console.log("data", data);
 
-      this.poolStats = data;
+      this.poolStats = data?.pool?.ethone;
       var ttf;
       var coin;
 
       (window.location.href.includes('firo')) ? ttf = 150 : ttf = 15;
       (window.location.href.includes('firo')) ? coin = ' FIRO' : coin = ' ETHONE';
-      var _ttfNetHashRate = this.poolStats.network?.hashrate;
-      var _ttfHashRate = this.poolStats.hashrate;
+      var _ttfNetHashRate = this.poolStats?.network?.hashrate;
+      var _ttfHashRate = this.poolStats?.hashrate;
       console.log(_ttfHashRate)
       // _ttfHashRate = 46992853600.7466667
       const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf );
@@ -94,16 +100,15 @@ class Dashboard extends HTMLElement {
       const poolFee = this.shadowRoot.querySelector("#poolFee");
       const poolPaid = this.shadowRoot.querySelector("#poolPaid");
 
-      networkDifficulty.innerHTML = _formatter(this.poolStats.network?.difficulty, 5, "H/s");
-      networkHashrate.innerHTML = _formatter(this.poolStats.network?.hashrate, 5, "H/s");
-      heightBlock.innerHTML = data;
+      networkDifficulty.innerHTML = _formatter(this.poolStats?.network?.difficulty, 5, "H/s");
+      networkHashrate.innerHTML = _formatter(this.poolStats?.network?.hashrate, 5, "H/s");
+      heightBlock.innerHTML = '';
       networkLastBlock.innerHTML = (Number(timeToFind.split('m')[0]) / 1440 * this.blocks * 100).toFixed(2) + "%";
-      activeMiners.innerHTML = this.poolStats.miners;
-      poolHash.innerHTML = _formatter(this.poolStats.hashrate, 2, "H/s");
+      activeMiners.innerHTML = this.poolStats?.miners;
+      poolHash.innerHTML = _formatter(this.poolStats?.hashrate, 2, "H/s");
       poolFee.innerHTML = timeToFind ? timeToFind : "-";
-      poolPaid.innerHTML = this.payments.toFixed(2) + coin;
-
-    })).subscribe();
+      poolPaid.innerHTML = this.payments?.toFixed(2) + coin;
+    });
   }
 
   private html() {

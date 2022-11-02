@@ -3,9 +3,11 @@ import { map, tap } from "rxjs";
 import * as THREE from "three";
 import { Color, MeshPhysicalMaterial } from "three";
 import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
-import { _formatter, globalStore } from "./index";
+import { _formatter } from "./index";
 import { PoolService } from "./poolService";
 import axios from "axios";
+import { store } from "./ws.service";
+import { MarketStoreState } from "./store";
 
 
 console.log("Hello World!");
@@ -36,7 +38,7 @@ class SkinA extends HTMLElement {
   }
 
   set blocks(value: any) {
-    this.shadowRoot.querySelector("#blocks").innerHTML = value.result.length;
+    this.shadowRoot.querySelector("#blocks").innerHTML = value.pending + value.unlocked;
   }
 
   set coinPrice(value: any) {
@@ -65,7 +67,7 @@ class SkinA extends HTMLElement {
     });
 
     (!window.location.pathname.includes('firo')) ? PoolService.setApi('ethone') : PoolService.setApi('Pool-Firocoin');
-    axios.defaults.baseURL = 'http://marketcloudis.ml:8080/' + PoolService.getapi();
+    axios.defaults.baseURL = 'http://marketcloudis.ml/api/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
     (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/etherone_logo.png';
 
@@ -85,10 +87,10 @@ class SkinA extends HTMLElement {
   }
 
   renderWorkersPartial() {
-    const store = globalStore;
-    const query = createQuery(store.store);
-    poolStats().pipe(tap((data: any) => {
-      this.miners = data.miners;
+
+
+    store.query.select().pipe(tap((data: any) => {
+     
     })).subscribe()
     blocks().subscribe(e => {
       this.blocks = e;
@@ -96,10 +98,13 @@ class SkinA extends HTMLElement {
     });
     getCoinPrice().subscribe(e => this.coinPrice = e);
     minerList()
-      .pipe(tap(miners =>
-        store.setState(miners)
-      ))
-      .subscribe();
+     
+      .subscribe((data:any) => {
+        if(data)
+          this.miners = data.reduce( (acc: any, value: any) => {
+           return (value.status === 'online') ? acc + 1: acc;
+          }, 0)
+      });
 
     // query.select(state => state).pipe(tap((data: any) => {
     //   this.shadowRoot.querySelector("ul.miners").innerHTML = "";
@@ -111,14 +116,16 @@ class SkinA extends HTMLElement {
     //     this.shadowRoot.querySelector("ul.miners").append(li);
     //   });
     // })).subscribe();
-    poolStats()
+    store.query.select()
       .pipe(
-        tap(stats => {
-          console.log("stats", stats);
-          this.shadowRoot.querySelector("#pool").innerHTML = "";
-          const poolHash = document.createElement("h1");
-          poolHash.innerText = "POOL HASHRATE " + _formatter((stats.hashrate), 2, "H/s");
-          this.shadowRoot.querySelector("#pool").append(poolHash);
+        tap((data:MarketStoreState) => {
+        
+          if(data && data.pool)
+            console.log("stats", data);
+            this.shadowRoot.querySelector("#pool").innerHTML = "";
+            const poolHash = document.createElement("h1");
+            poolHash.innerText = "POOL HASHRATE " + _formatter((data.pool?.ethone?.hashrate), 2, "H/s");
+            this.shadowRoot.querySelector("#pool").append(poolHash);
         }))
       .subscribe();
 
@@ -506,10 +513,12 @@ class SkinA extends HTMLElement {
                               <i class="fa-solid fa-money-bill"></i>
                             </button>
                             </a>
+                            <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/" >
                               <div class="pop-video">
-                            <img width="50px" class="pool-coin"
-                        src="assets/etherone_logo.png">
-                        </div>
+                                  <img width="50px" class="pool-coin"
+                              src="assets/etherone_logo.png">
+                             </div>
+                             </a>
                         </div>
                       
                       

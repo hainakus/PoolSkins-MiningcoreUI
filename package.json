@@ -38,6 +38,7 @@
     "moment": "^2.29.2",
     "node-sass": "^7.0.1",
     "rxjs": "^7.5.5",
+    "socket.io-client": "^4.5.3",
     "style-loader": "^3.3.1",
     "three": "^0.139.0",
     "three-strip": "git+https://github.com/hainakus/threejs-strip-fork.git",

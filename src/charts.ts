@@ -24,7 +24,7 @@ export class Chart extends HTMLElement {
   position: relative;
   display: flex;
   align-items: center;
-  color: #353535;
+  color: white;
   background: transparent;
   border: none;
   font-family: inherit;
@@ -34,8 +34,8 @@ export class Chart extends HTMLElement {
   font-variation-settings: "wght" 500;
   cursor: pointer;
   transition: transform 0.4s ease-out;
-  box-shadow: 9px 9px 16px 0px #a3b1c6, -9px -9px 16px 0px rgba(255, 255, 255, 0.6);
-}
+  box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
+ }
 .send:hover .icon svg {
   transform: translate(-5px, 5px);
 }
@@ -48,7 +48,7 @@ export class Chart extends HTMLElement {
 .icon {
   display: block;
   padding: 1rem;
-  box-shadow: 9px 9px 16px 0px #a3b1c6, -9px -9px 16px 0px rgba(255, 255, 255, 0.6);
+   box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
   border-radius: 50%;
   width: 4.5rem;
   height: 4.5rem;
@@ -58,7 +58,7 @@ export class Chart extends HTMLElement {
 }
 
 svg {
-  fill: currentColor;
+  fill: white;
   width: 2rem;
   height: 2rem;
   transition: transform 0.4s ease-out;

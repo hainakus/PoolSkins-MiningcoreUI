@@ -11,6 +11,7 @@ import './dashboard'
 import './connect-stratum'
 import './payments'
 import './not-found'
+import './ws.service'
 
 export const _formatter = (value: number, decimal: number, unit: string) => {
   if (value === 0) {
@@ -36,9 +37,8 @@ export const _formatter = (value: number, decimal: number, unit: string) => {
   }
 }
 
-export const globalStore = new MarketStore()
 
-globalStore.setState([])
+
 
 
 
