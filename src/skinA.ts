@@ -42,7 +42,7 @@ class SkinA extends HTMLElement {
   }
 
   set coinPrice(value: any) {
-    this.shadowRoot.querySelector("#price").innerHTML = value.rate.toFixed(5);
+    this.shadowRoot.querySelector("#price").innerHTML = !!value ? value.rate?.toFixed(5) : 0;
   }
 
   set minerHashrate(value: any) {

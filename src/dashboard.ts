@@ -114,24 +114,7 @@ class Dashboard extends HTMLElement {
   private html() {
     return ` 
     <style>
-        /* Extra small devices (phones, 600px and down) */
-          @media only screen and (max-width: 600px) {
-              
-          }
-          
-          /* Small devices (portrait tablets and large phones, 600px and up) */
-          @media only screen and (min-width: 600px) {
-              :host {
-                    grid-template-columns: 1fr 1fr !important;
-                    grid-template-rows: 1fr 1fr 1fr 1fr !important;
-                    grid-template-areas: 
-                    'card1 card2'
-                     'card3 card4'
-                    'card5 card6' 
-                    'card7 card8';
-        }
-               }
-          }
+
           
           /* Medium devices (landscape tablets, 768px and up) */
           @media only screen and (min-width: 768px) {...}
@@ -148,17 +131,15 @@ class Dashboard extends HTMLElement {
             top: 40px;
            
             height: 100%;
-            width: 800px;
+            width: 100%;
             position: relative;
             z-index: 1;
 
             display: grid;
             gap: 20px;
-            grid-template-columns:1fr 1fr 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             grid-template-areas: 
-            'card1 card2 card3 card4'
-            'card5 card6 card7 card8';
+            'cards';
         }
        div[class^="card"], div[class*=" card"] {
           align-items: center;
@@ -184,39 +165,15 @@ class Dashboard extends HTMLElement {
        span {
         color: #3c3a3a;
        }
-        .card1{
-          grid-area: card1;
-          
-          
-        }
-        .card2{
-          grid-area: card2;
-
-        }
-        .card3{
-          grid-area: card3;
+       .wrap_cards {
+        grid-area: cards;
+            display: grid;
    
-        }
-        .card4{
-          grid-area: card4;
-  
-        }
-        .card5{
-          grid-area: card5;
-
-        }
-        .card6{
-          grid-area: card6;
- 
-        }
-          .card7{
-          grid-area: card7;
- 
-        }
-          .card8{
-          grid-area: card8;
- 
-        }
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(auto-fit, 200px);
+    gap: 30px;
+       }
+        
         .loader {
         position: relative;
         width: 20px;
@@ -255,6 +212,7 @@ class Dashboard extends HTMLElement {
       }
 
     </style>
+    <div class="wrap_cards">
       <div class="card1">
 
         <h4>Network Diff</h4>
@@ -294,6 +252,7 @@ class Dashboard extends HTMLElement {
           <h4>Pool Total Paid</h4>
            <span><div id="poolPaid">0</div></span>
       </div>
+    </div>  
     `;
   }
 }
