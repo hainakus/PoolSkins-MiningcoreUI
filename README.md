@@ -1,4 +1,4 @@
-# 🚀 Welcome to your WebComponents Frontend awesome Mining Core UI!
+# 🚀 Miningcore on WebComponents Frontend awesome Mining Core UI!
 
 This project has been created using **webpack-cli**, you can now run
 
