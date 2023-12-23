@@ -32,6 +32,7 @@ class SkinA extends HTMLElement {
   set miners(value: any) {
     console.log(value);
     this._miners = value;
+    this.shadowRoot.querySelector("#miners").innerHTML = '0'
     this.shadowRoot.querySelector("#miners").innerHTML = value;
   }
 
