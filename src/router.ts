@@ -9,6 +9,7 @@ router.setRoutes([
       {path: '/', component: 'x-dash'},
       {path: '/connect', component: 'x-connect'},
       {path: '/wallet', component: 'x-chart'},
+      {path: '/wallet/:ID', component: 'x-wallet'},
       {path: '/payments', component: 'x-payments'},
     ]
   },

@@ -1,26 +1,44 @@
 import axios, { AxiosResponse } from "axios";
-import { defer, map, of } from "rxjs";
+import { defer, interval, map, of, switchMap, tap } from "rxjs";
 import { io } from "socket.io-client";
 
 import { PoolService } from "./poolService";
 import { MarketStore } from "./store";
+import { poolStats } from "./api.service";
 
 
 
-const baseURL = 'http://marketcloudis.ml/api/';
+const baseURL = 'http://hydranetwork.online:4000/api/pools/';
 
 export const store = new MarketStore();
 
-const socket = io('http://marketcloudis.ml:8080');
+const poolService = poolStats()
 
-socket.on("connect", () => {
-  console.log(socket.disconnected);
-  setInterval( () =>  // false
-  socket.emit("stats", "ethone")
-  , 1500)
-});
-
-socket.on('stats', (event) => {
-    console.log(event)
-    store.setDashBoard(event, 'ethone');
+poolService.subscribe( message => {
+  console.log(message)
+  store.setDashBoard(message.pool, 'kaspa')
+  console.log(store.query.getValue())
 })
+const ws = new WebSocket('ws://hydranetwork.online:4000/notifications')
+
+const poolEffort = interval(55000).pipe(switchMap(_ => poolService.pipe(tap( data => {
+ store.setDashBoardEffort( data.pool.poolEffort, 'kaspa')
+})))).subscribe()
+
+ws.onopen = () => {
+  console.log('ws opened on browser')
+  //ws.send('hello world')
+}
+
+ws.onmessage = (message) => {
+  console.log(`message received`, message.data)
+  const m = JSON.parse(message.data)
+  if(m.type === 'hashrateupdated' && m.miner === null && m.poolId === 'nexa1') {
+    store.setDashBoardHasrate(m.hashrate, 'kaspa')
+    console.log(store.query.getValue())
+  }
+  if(m.type === 'hashrateupdated' && m.miner !== null && m.poolId === 'nexa1') {
+    const m = JSON.parse(message.data)
+    store.updateTopMiner(m, 'kaspa')
+  }
+}

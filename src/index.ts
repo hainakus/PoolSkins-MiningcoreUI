@@ -1,5 +1,6 @@
 
 
+
 console.log("Hello World!");
 import { MarketStore } from "./store";
 import './style.scss'
@@ -10,6 +11,7 @@ import './skinA';
 import './dashboard'
 import './connect-stratum'
 import './payments'
+import './wallet'
 import './not-found'
 import './ws.service'
 

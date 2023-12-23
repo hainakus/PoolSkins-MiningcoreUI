@@ -4,15 +4,15 @@ import { PoolService } from "./poolService";
 
 
 
-axios.defaults.baseURL = 'http://marketcloudis.ml:8080/' + PoolService.getapi();
+axios.defaults.baseURL = 'http://hydranetwork.online:4000/api/pools/' + PoolService.getapi();
 
 export const minerList = () => defer( () => axios.get('/miners')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const poolStats = () => defer( () => axios.get('/stats')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const poolStats = () => defer( () => axios.get('/')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const miner = (wallet: string) => defer( () => axios.get('/accounts/'+ wallet)).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const miner = (wallet: string) => defer( () => axios.get('/miners/'+ wallet)).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
-export const statistics = () => defer( () => axios.get('/stats')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
+export const statistics = () => defer( () => axios.get('/performance')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
 export const blocks = () => defer( () => axios.get('/blocks')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
@@ -24,8 +24,11 @@ export const getCoinPrice = () => {
     "x-api-key": "a38910e4-d5df-4d58-b481-5d2eab4cf7df",
   }
   let payload = {};
-  (PoolService.getapi() === 'ethone') ? payload = {"currency":"USD","code":"OCTA","meta":true} : payload = {"currency":"USD","code":"FIRO","meta":true};
+  (PoolService.getapi() === 'nexa1') ? payload = {"currency":"USD","code":"NEXA","meta":true} : payload = {"currency":"USD","code":"NEXA","meta":true};
   return defer(() => axios.post('https://api.livecoinwatch.com/coins/single ', payload,{ headers })).pipe(map ((axiosResponse: AxiosResponse) => axiosResponse.data ))
 
 
 }
+
+
+
