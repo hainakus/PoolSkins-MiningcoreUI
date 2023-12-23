@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "@types/d3": "^7.1.0",
+    "@types/lodash": "^4.14.202",
     "@types/three": "^0.138.0",
     "@webpack-cli/generators": "^3.0.7",
     "copy-webpack-plugin": "^10.2.4",
@@ -30,11 +31,14 @@
     "@datorama/akita": "^8.0.1",
     "@vaadin/router": "^1.7.4",
     "axios": "^1.6.2",
+    "chart.js": "^4.4.1",
     "clipboard": "^2.0.11",
     "css-loader": "^6.7.1",
     "d3": "^7.4.2",
+    "discord-webhook-node": "^1.1.8",
     "file-loader": "^6.2.0",
     "gsap": "^3.10.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "node-sass": "^9.0.0",
     "rxjs": "^7.5.5",
@@ -42,6 +46,7 @@
     "style-loader": "^3.3.1",
     "three": "^0.139.0",
     "three-strip": "git+https://github.com/hainakus/threejs-strip-fork.git",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "webhook-discord": "^3.7.8"
   }
 }

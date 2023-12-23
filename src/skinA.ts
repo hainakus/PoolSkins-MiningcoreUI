@@ -1,7 +1,5 @@
 import { createQuery } from "@datorama/akita";
 import { map, tap } from "rxjs";
-import * as THREE from "three";
-import { Color, MeshPhysicalMaterial } from "three";
 import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { _formatter } from "./index";
 import { PoolService } from "./poolService";
@@ -38,7 +36,7 @@ class SkinA extends HTMLElement {
   }
 
   set blocks(value: any) {
-    this.shadowRoot.querySelector("#blocks").innerHTML = value.pending + value.unlocked;
+    this.shadowRoot.querySelector("#blocks").innerHTML = value;
   }
 
   set coinPrice(value: any) {
@@ -51,7 +49,7 @@ class SkinA extends HTMLElement {
   changePool() {
 
 
-    (PoolService.getapi() === 'ethone') ? this.navigate('/firo') : this.navigate('/')
+    (PoolService.getapi() === 'nexa1') ? this.navigate('/firo') : this.navigate('/')
   }
   navigate(url: string | URL) {
     window.history.pushState({}, null, url);
@@ -61,15 +59,15 @@ class SkinA extends HTMLElement {
 
     const forward = this.shadowRoot.getElementById('navForward');
     forward.addEventListener('click',  (  ) =>  {
-      (PoolService.getapi() === 'Pool-Firocoin') ? this.navigate( '/') : this.navigate( '/firo');
+      (PoolService.getapi() === 'nexa1') ? this.navigate( '/') : this.navigate( '/firo');
 
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     });
 
-    (!window.location.pathname.includes('firo')) ? PoolService.setApi('ethone') : PoolService.setApi('Pool-Firocoin');
-    axios.defaults.baseURL = 'http://marketcloudis.ml/api/' + PoolService.getapi();
+    (!window.location.pathname.includes('firo')) ? PoolService.setApi('nexa1') : PoolService.setApi('nexa1');
+    axios.defaults.baseURL = 'http://hydranetwork.online:4000/api/pools/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'Pool-Firocoin') ? image.src = 'assets/firo.png' : image.src = 'assets/etherone_logo.png';
+    (PoolService.getapi() === 'nexa1') ? image.src = 'https://k1pool.com/assets/media/logos/coin-nexa.png' : image.src = 'https://k1pool.com/assets/media/logos/coin-nexa.png';
 
 
     this.renderWorkersPartial();
@@ -90,21 +88,23 @@ class SkinA extends HTMLElement {
 
 
     store.query.select().pipe(tap((data: any) => {
-     
+      console.log('blocks',data?.pool?.kaspa.totalBlocks)
+      this.blocks = data?.pool?.kaspa?.totalBlocks;
+      this.miners = data?.pool?.kaspa?.poolStats?.connectedMiners
     })).subscribe()
     blocks().subscribe(e => {
-      this.blocks = e;
+
 
     });
     getCoinPrice().subscribe(e => this.coinPrice = e);
-    minerList()
-     
-      .subscribe((data:any) => {
-        if(data)
-          this.miners = data.reduce( (acc: any, value: any) => {
-           return (value.status === 'online') ? acc + 1: acc;
-          }, 0)
-      });
+    // minerList()
+    //
+    //   .subscribe((data:any) => {
+    //     if(data)
+    //       this.miners = data.reduce( (acc: any, value: any) => {
+    //        return (value.hashrate > 0) ? acc + 1: acc;
+    //       }, 0)
+    //   });
 
     // query.select(state => state).pipe(tap((data: any) => {
     //   this.shadowRoot.querySelector("ul.miners").innerHTML = "";
@@ -124,8 +124,10 @@ class SkinA extends HTMLElement {
             console.log("stats", data);
             this.shadowRoot.querySelector("#pool").innerHTML = "";
             const poolHash = document.createElement("h1");
-            poolHash.innerText = "POOL HASHRATE " + _formatter((data.pool?.ethone?.hashrate), 2, "H/s");
+            poolHash.classList.add('ToFadeInAndOut')
+            poolHash.innerText = "POOL HASHRATE " + _formatter((data.pool?.kaspa?.poolStats.poolHashrate), 2, "H/s");
             this.shadowRoot.querySelector("#pool").append(poolHash);
+
         }))
       .subscribe();
 
@@ -163,7 +165,7 @@ class SkinA extends HTMLElement {
             opacity: 1;
              z-index: 0;
           }
-
+  
            :host {
                        
                             margin: 0;
@@ -421,7 +423,18 @@ class SkinA extends HTMLElement {
          ::slotted(*) {
             grid-area: dash;
          }
-         
+          .ToFadeInAndOut {
+            opacity: 1;
+            color: #FFF;
+            animation: fade 4s linear;
+        }
+
+
+        @keyframes fade {
+            0%,100% { color: #FFF }
+            20% {  color: #53ebcb  }
+            40% {  color: #53ebcb }
+        }
         x-card {
         position: relative;
         }
@@ -546,7 +559,7 @@ class SkinA extends HTMLElement {
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
-                        ${ window.location.href.includes('firo') ? 'FIRO' : 'ETHONE'}  
+                        ${ window.location.href.includes('firo') ? 'NEXA' : 'NEXA'}  
                         <p id="price"></p> USD
                       
                       </div>

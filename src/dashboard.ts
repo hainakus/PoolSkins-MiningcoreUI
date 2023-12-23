@@ -70,7 +70,7 @@ class Dashboard extends HTMLElement {
     })
     blocks().subscribe(data => {
       const blocks = data;
-      this.blocks = blocks.result.length;
+      this.blocks = blocks.length;
     });
     store.query.select().pipe(filter(e => !!e), tap((data:any) => {
      
@@ -78,36 +78,56 @@ class Dashboard extends HTMLElement {
     })).subscribe( (data:MarketStoreState) => {
       console.log("data", data);
 
-      this.poolStats = data?.pool?.ethone;
+      this.poolStats = data?.pool?.kaspa;
       var ttf;
       var coin;
 
-      (window.location.href.includes('firo')) ? ttf = 150 : ttf = 15;
-      (window.location.href.includes('firo')) ? coin = ' FIRO' : coin = ' ETHONE';
-      var _ttfNetHashRate = this.poolStats?.network?.hashrate;
-      var _ttfHashRate = this.poolStats?.hashrate;
-      console.log(_ttfHashRate)
+      (window.location.href.includes('firo')) ? ttf = 120 : ttf = 120;
+      (window.location.href.includes('firo')) ? coin = ' NEXA' : coin = ' NEXA';
+      var _ttfNetHashRate = this.poolStats?.networkStats.networkHashrate;
+      var _ttfHashRate = this.poolStats?.poolStats.poolHashrate;
+      console.log('pool',_ttfHashRate)
       // _ttfHashRate = 46992853600.7466667
-      const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf );
-     // const fee = data.body.primary.config.recipientFee * 100;
+
+        const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf);
+
+        // const fee = data.body.primary.config.recipientFee * 100;
       const amountPaid = Number(data).toFixed(2);
       const networkDifficulty = this.shadowRoot.querySelector("#networkDifficulty");
       const networkHashrate = this.shadowRoot.querySelector("#networkHashRate");
-      const heightBlock = this.shadowRoot.querySelector("#networkBlockHeight");
       const networkLastBlock = this.shadowRoot.querySelector("#networkLastBlock");
-      const activeMiners = this.shadowRoot.querySelector("#activeMiners");
+
       const poolHash = this.shadowRoot.querySelector("#poolHashRate");
       const poolFee = this.shadowRoot.querySelector("#poolFee");
       const poolPaid = this.shadowRoot.querySelector("#poolPaid");
+      const expectedHashes = this.poolStats?.networkStats.networkDifficulty * (2**32);
+// Function to calculate pool luck
+      function calculatePoolLuck(poolHashRate: number, networkDifficulty: number, blocksFound: number) {
+        // Calculate the expected time to find a block
+        const expectedTime = networkDifficulty / poolHashRate;
 
-      networkDifficulty.innerHTML = _formatter(this.poolStats?.network?.difficulty, 5, "H/s");
-      networkHashrate.innerHTML = _formatter(this.poolStats?.network?.hashrate, 5, "H/s");
-      heightBlock.innerHTML = '';
-      networkLastBlock.innerHTML = (Number(timeToFind.split('m')[0]) / 1440 * this.blocks * 100).toFixed(2) + "%";
-      activeMiners.innerHTML = this.poolStats?.miners;
-      poolHash.innerHTML = _formatter(this.poolStats?.hashrate, 2, "H/s");
+        // Calculate the pool's luck based on recent block discoveries
+        const poolLuck = blocksFound / expectedTime;
+
+        return poolLuck;
+      }
+
+// Example usage
+      const poolHashRate = this.poolStats?.poolStats.poolHashrate; // in hashes per second
+
+      const blocksFound = 0; // number of blocks found by the pool
+
+      const luck = calculatePoolLuck(poolHashRate, this.poolStats?.networkDifficulty, blocksFound);
+      console.log("Pool Luck:", luck);
+
+      networkDifficulty.innerHTML = _formatter(this.poolStats?.networkStats.networkDifficulty, 5, "H/s");
+      networkHashrate.innerHTML = _formatter(this.poolStats?.networkStats.networkHashrate, 5, "H/s");
+
+      networkLastBlock.innerHTML =`${(this.poolStats?.poolEffort * 100).toFixed(2)}%`;
+
+      poolHash.innerHTML = _formatter(_ttfHashRate, 2, "H/s");
       poolFee.innerHTML = timeToFind ? timeToFind : "-";
-      poolPaid.innerHTML = this.payments?.toFixed(2) + coin;
+      poolPaid.innerHTML = this.poolStats?.totalPaid.toFixed(2) + coin;
     });
   }
 
@@ -127,7 +147,7 @@ class Dashboard extends HTMLElement {
     
     
         :host {
-            padding: 0 40px;
+            padding: 0px;
             top: 40px;
            
             height: 100%;
@@ -135,22 +155,20 @@ class Dashboard extends HTMLElement {
             position: relative;
             z-index: 1;
 
-            display: grid;
+            display: flex;
             gap: 20px;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            grid-template-areas: 
-            'cards';
+            flex-direction: column;
         }
        div[class^="card"], div[class*=" card"] {
           align-items: center;
           justify-content: start;
           gap: 10px;
           opacity: 1;
-          width: 200px;
-          height: 210px;
+          min-width: 150px;
+          min-height: 160px;
           display: flex;
           flex-direction: column;
-          flex: 1;
+       
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           background: rgb(42 46 60);
@@ -166,12 +184,11 @@ class Dashboard extends HTMLElement {
         color: #3c3a3a;
        }
        .wrap_cards {
-        grid-area: cards;
-            display: grid;
-   
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(auto-fit, 200px);
+       display: flex;
+       flex-direction: row;
+       flex-wrap: wrap;
     gap: 30px;
+        justify-content: flex-end;
        }
         
         .loader {
@@ -225,21 +242,14 @@ class Dashboard extends HTMLElement {
          <span class="Network"><div id="networkHashRate"></div></span>
                         
       </div>
-      <div class="card3">
- 
-        <h4>Current Effort</h4>
-        <span class="Blockchain"><div id="networkBlockHeight"></div></span>
-      </div>
       <div class="card4">
 
-        <h4>Pool Luck</h4>
+        <h4>Pool Effort</h4>
         <span class="Block"><div id="networkLastBlock"></div></span>
                         
       </div>
-      <div class="card5">
-         <h4>Active Miners</h4>
-         <span><div id="activeMiners">0</div></span>
       </div>
+      <div class="wrap_cards">
       <div class="card6">
         <h4>Pool Hash</h4> 
         <span><div id="poolHashRate">0</div></span>

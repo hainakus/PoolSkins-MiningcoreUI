@@ -1,7 +1,8 @@
 import { miner } from "./api.service";
 import { catchError, tap } from "rxjs";
+import { Chart } from "chart.js";
 
-export class Chart extends HTMLElement {
+export class Charts extends HTMLElement {
   display = false;
   render = false;
   constructor() {
@@ -66,18 +67,18 @@ svg {
   
 }
   input {
-width: 56vmin;
-height: 15vmin;
-border: none;
-border-radius: 1rem;
-outline: none;
-font-size: 7.5vmin;
-font-weight: bold;
-padding: 0 4vmin;
-box-shadow: var(--inner-shadow);
-background: var(--greyLight-1);
-color: var(--primary);
-caret-color: var(--primary);
+    width: 15vmin;
+    height: 4vmin;
+    border: none;
+    border-radius: 1rem;
+    outline: none;
+    font-size: 1.5vmin;
+    font-weight: bold;
+    padding: 0 4vmin;
+    box-shadow: var(--inner-shadow);
+    background: var(--greyLight-1);
+    color: var(--primary);
+    caret-color: var(--primary);
 }
 
   h1 {
@@ -103,21 +104,13 @@ caret-color: var(--primary);
      sendButton.addEventListener('click', () => {
        const wallet = inputWallet.value;
        if( wallet !== '') {
-         miner(wallet).pipe(tap( _ => {
-
-
-
-         })).subscribe( _ => {
+         miner(wallet).subscribe( _ => {
            sendButton.style.display = 'none';
            inputWallet.style.display = 'none';
-           if(_.body.primary.workers.shared.length === 0 && _.body.primary.workers.solo.length === 0) {
-             this.display = true
-             const doc = this.shadowRoot.querySelector('#wallet')
-             doc.innerHTML = this.displayNotFound(_)
-           } else {
-             const doc = this.shadowRoot.querySelector('#wallet')
-             doc.innerHTML = this.renderWallet(_)
-           }
+
+
+            this.navigate('wallet/' + wallet)
+
          }, catchError( (e:any) => this.displayNotFound(e)), () => {})
        }
      })
@@ -125,7 +118,10 @@ caret-color: var(--primary);
 
   private renderWallet(res: any) {
     console.log(res)
-    return JSON.stringify(res)
+    return `
+    <div>
+  <canvas id="myChart"></canvas>
+</div>`
   }
 
   private displayNotFound(e: any) {
@@ -133,6 +129,11 @@ caret-color: var(--primary);
         <h1>$WALLET NOT FOUND $</h1>
         </div>  `
   }
+
+  navigate(url: string | URL) {
+    window.history.pushState({}, null, url);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }
 }
 
-customElements.define('x-chart', Chart);
+customElements.define('x-chart', Charts);
