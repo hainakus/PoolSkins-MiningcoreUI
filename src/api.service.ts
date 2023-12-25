@@ -4,7 +4,7 @@ import { PoolService } from "./poolService";
 
 
 
-axios.defaults.baseURL = 'https://hydranetwork.online:4000/api/pools/' + PoolService.getapi();
+axios.defaults.baseURL = 'https://api.hydranetwork.online/api/pools/' + PoolService.getapi();
 
 export const minerList = () => defer( () => axios.get('/miners')).pipe(map( (axiosResponse: AxiosResponse) => axiosResponse.data ))
 
