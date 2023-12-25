@@ -80,7 +80,7 @@ class SkinA extends HTMLElement {
     });
 
     (!window.location.pathname.includes('firo')) ? PoolService.setApi('nexa1') : PoolService.setApi('nexa1');
-    axios.defaults.baseURL = 'http://hydranetwork.online:4000/api/pools/' + PoolService.getapi();
+    axios.defaults.baseURL = 'https://hydranetwork.online:4000/api/pools/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
     (PoolService.getapi() === 'nexa1') ? image.src = 'https://k1pool.com/assets/media/logos/coin-nexa.png' : image.src = 'https://k1pool.com/assets/media/logos/coin-nexa.png';
 
