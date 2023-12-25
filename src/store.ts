@@ -55,6 +55,12 @@ export class MarketStore {
     this.store.update((state: any) => ({...state, pool: { ...state.pool, [`${coin}`]: {...state.pool[`${coin}`], poolEffort: data }}}));
     this.store.setLoading(false);
   }
+  setTopMiner(topMiners: any[], coin: string) {
+    this.store.setLoading(true);
+    this.store._setState((state: any) => ({...state, pool: { ...state.pool, [`${coin}`]: {...state.pool[`${coin}`], topMiners:  topMiners}}}))
+
+    this.store.setLoading(false);
+  }
   updateTopMiner(miner:any, coin: string) {
     this.store.setLoading(true);
 

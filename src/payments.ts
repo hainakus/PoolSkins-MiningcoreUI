@@ -20,20 +20,20 @@ export class Payments extends HTMLElement {
   }
   renderFiro() {
     let html: string = '';
-    Object.entries(this.payments.immature).forEach( ([miner, tobePaid]) => {
+    this.payments?.forEach( (miner:any)  => {
 
       console.log(this.payments)
-      html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} to be paid FIRO</td></tr>`;
+      html +=`<tr><td>Miner ${ miner }</td><td> ${miner} to be paid NEXA</td></tr>`;
       console.log(html)
 
     })
     this.shadowRoot.querySelector('#tobePaid').innerHTML = html;
 
     html = '';
-    Object.entries(this.payments.paid).forEach( ([miner, tobePaid]) => {
+    this.payments?.forEach( (miner:any)  => {
 
       console.log(this.payments)
-      html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} paid FIRO</td></tr>`;
+      html +=`<tr><td>Miner ${ miner }</td><td> ${miner} paid NEXA</td></tr>`;
       console.log(html)
 
     })
@@ -41,7 +41,7 @@ export class Payments extends HTMLElement {
   }
   renderNeox() {
     let html: string = '';
-     Object.entries(this.payments.immature).forEach( ([miner, tobePaid]) => {
+     Object.entries(this.payments?.immature).forEach( ([miner, tobePaid]) => {
 
       console.log(this.payments)
        html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} to be paid NEOX</td></tr>`;
@@ -51,7 +51,7 @@ export class Payments extends HTMLElement {
     this.shadowRoot.querySelector('#tobePaid').innerHTML = html;
 
     html = '';
-    Object.entries(this.payments.paid).forEach( ([miner, tobePaid]) => {
+    Object.entries(this.payments?.paid).forEach( ([miner, tobePaid]) => {
 
       console.log(this.payments)
       html +=`<tr><td>Miner ${ miner }</td><td> ${tobePaid} paid NEOX</td></tr>`;
@@ -83,7 +83,7 @@ export class Payments extends HTMLElement {
           }
         </style>
         <div class="">
-        <h1>PAYMENTS FOR ${window.location.pathname.includes('firo') ?  'FIRO': 'NEOX' }</h1>
+        <h1>PAYMENTS FOR ${window.location.pathname.includes('nexa1') ?  'NEXA': 'NEXA' }</h1>
         <table>
             <tbody id="tobePaid">
             
@@ -105,7 +105,8 @@ export class Payments extends HTMLElement {
   connectedCallback() {
     payments().pipe(tap ( payments => this.payments = payments)).subscribe(_=>  {
       this.shadowRoot.innerHTML = this.html();
-      (window.location.pathname.includes('firo')) ? this.renderFiro(): this.renderNeox();
+      console.log('PAYM', this.payments);
+      (window.location.pathname.includes('/')) ? this.renderFiro(): this.renderFiro();
     })
 
   }

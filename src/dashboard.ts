@@ -120,7 +120,7 @@ class Dashboard extends HTMLElement {
       const luck = calculatePoolLuck(poolHashRate, this.poolStats?.networkDifficulty, blocksFound);
       console.log("Pool Luck:", luck);
 
-      networkDifficulty.innerHTML = _formatter(this.poolStats?.networkStats.networkDifficulty, 5, "H/s");
+      networkDifficulty.innerHTML = _formatter(this.poolStats?.networkStats.networkDifficulty, 5, " ");
       networkHashrate.innerHTML = _formatter(this.poolStats?.networkStats.networkHashrate, 5, "H/s");
 
       networkLastBlock.innerHTML =`${(this.poolStats?.poolEffort * 100).toFixed(2)}%`;
@@ -174,8 +174,9 @@ class Dashboard extends HTMLElement {
           background: rgb(42 46 60);
           border-radius: 15%;
           box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
-          font-size: 20px;
+          font-size: 1.85rem;
           color: #999ba5;
+          font-weight: 100;
        }
         div[class^="card"] span div, div[class*=" card"] span div { 
           color: #999ba5;        

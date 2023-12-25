@@ -23,5 +23,5 @@ router.setRoutes([
       {path: '/payments', component: 'x-payments'},
     ]
   },
-  {path: '(.*)', component: 'x-not-found'},
+  {path: '(.*)', redirect: '/'},
 ]);

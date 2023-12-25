@@ -23,6 +23,7 @@ const ws = new WebSocket('ws://hydranetwork.online:4000/notifications')
 
 const poolEffort = interval(55000).pipe(switchMap(_ => poolService.pipe(tap( data => {
  store.setDashBoardEffort( data.pool.poolEffort, 'kaspa')
+  store.setTopMiner(data.pool.topMiners, 'kaspa')
 })))).subscribe()
 
 ws.onopen = () => {

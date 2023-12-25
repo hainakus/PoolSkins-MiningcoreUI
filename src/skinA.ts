@@ -12,6 +12,7 @@ console.log("Hello World!");
 
 
 class SkinA extends HTMLElement {
+   _poolFee: any;
 
   constructor() {
     super();
@@ -20,9 +21,22 @@ class SkinA extends HTMLElement {
 
 
     this.shadowRoot.innerHTML = this.html();
-
+    store.query.select().pipe(tap((data: any) => {
+      if(!data.loading) {
+        console.log('blocks', data?.pool?.kaspa.poolFeePercent)
+        this.blocks = data?.pool?.kaspa?.totalBlocks;
+        this.poolFee = data?.pool?.kaspa?.poolFeePercent
+        this.miners = data?.pool?.kaspa?.poolStats?.connectedMiners
+      }
+    })).subscribe()
   }
-
+  get poolFee () {
+    return this._poolFee
+  }
+  set poolFee(value: any) {
+    this._poolFee = value
+    this.shadowRoot.getElementById('fee').innerHTML = value
+  }
   private _miners: any;
 
   get miners() {
@@ -88,15 +102,6 @@ class SkinA extends HTMLElement {
   renderWorkersPartial() {
 
 
-    store.query.select().pipe(tap((data: any) => {
-      console.log('blocks',data?.pool?.kaspa.totalBlocks)
-      this.blocks = data?.pool?.kaspa?.totalBlocks;
-      this.miners = data?.pool?.kaspa?.poolStats?.connectedMiners
-    })).subscribe()
-    blocks().subscribe(e => {
-
-
-    });
     getCoinPrice().subscribe(e => this.coinPrice = e);
     // minerList()
     //
@@ -433,8 +438,8 @@ class SkinA extends HTMLElement {
 
         @keyframes fade {
             0%,100% { color: #FFF }
-            20% {  color: #53ebcb  }
-            40% {  color: #53ebcb }
+            20% {  color: #fddd79  }
+            40% {  color: #fddd79 }
         }
         x-card {
         position: relative;
@@ -513,21 +518,21 @@ class SkinA extends HTMLElement {
                             <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                    
                      
-                           <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/connect"> <button class='button' type='button'>
+                           <a href="${window.location.pathname === '/' ? '' : window.location.pathname}/connect"> <button class="button" type="button">
                               <i class="fa-solid fa-circle-nodes"></i>
                             </button>
                             </a>
-                           <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/wallet" >
-                            <button class='button' type='button'>
+                           <a href="${window.location.pathname === '/' ? '' : window.location.pathname}/wallet" >
+                            <button class="button" type="button">
                               <i class="fa-solid fa-wallet"></i>
                             </button>
                             </a>
-                              <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/payments" >
-                            <button class='button' type='button'>
+                              <a href="${window.location.pathname === '/' ? '' : window.location.pathname}/payments" >
+                            <button class="button" type="button">
                               <i class="fa-solid fa-money-bill"></i>
                             </button>
                             </a>
-                            <a href="${ window.location.pathname === '/' ? '': window.location.pathname }/" >
+                            <a href="${window.location.pathname === '/' ? '' : window.location.pathname}/" >
                               <div class="pop-video">
                                   <img width="50px" class="pool-coin"
                               src="assets/etherone_logo.png">
@@ -560,7 +565,7 @@ class SkinA extends HTMLElement {
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
-                        ${ window.location.href.includes('firo') ? 'NEXA' : 'NEXA'}  
+                        ${window.location.href.includes('firo') ? 'NEXA' : 'NEXA'}  
                         <p id="price"></p> USD
                       
                       </div>
@@ -569,7 +574,7 @@ class SkinA extends HTMLElement {
             
 <!--                 <a href="#" class="button play-btn">ERGO POOL</a>-->
                 <h1 class="image-mask"><slot name="title"><div id="pool"></div> </slot></h1>
-                <h3>Pool Fee 0.2%, SOLO/PROP</h3>
+                <h3>Pool Fee  <span id="fee"></span> %, SOLO/PROP</h3>
                 <div class="footer">
                    <a href="https://t.me/LocalFiroBot">
                        
