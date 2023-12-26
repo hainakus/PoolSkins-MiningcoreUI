@@ -63,6 +63,9 @@ export class Payments extends HTMLElement {
   html() {
     return `
         <style>
+        h1 {
+            margin-top: 45px;
+        }
  progress::-webkit-progress-value {
             background-color: #ffe844; /* Set the color for WebKit browsers (Chrome, Safari) */
         }
@@ -95,7 +98,7 @@ export class Payments extends HTMLElement {
     }
         </style>
         <div class="">
-        <h1>PAYMENTS FOR ${window.location.pathname.includes('nexa1') ? 'NEXA' : 'NEXA'}</h1>
+        <h1>REWARDS FOR ${window.location.pathname.includes('nexa1') ? 'NEXA' : 'NEXA'}</h1>
         <table>
             <thead>
             <th>Height</th>
