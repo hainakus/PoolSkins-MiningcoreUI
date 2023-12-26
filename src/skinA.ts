@@ -518,16 +518,16 @@ class SkinA extends HTMLElement {
                             <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                    
                      
-                           <a href="#" onclick="${navigate('/connect')}"> <button class="button" type="button">
+                           <a href="#" onclick="navigate('/connect')"> <button class="button" type="button">
                               <i class="fa-solid fa-circle-nodes"></i>
                             </button>
                             </a>
-                           <a href="#" onclick="${navigate('/wallet')}" >
+                           <a href="#" onclick="navigate('/wallet')" >
                             <button class="button" type="button">
                               <i class="fa-solid fa-wallet"></i>
                             </button>
                             </a>
-                              <a href="#" onclick="${navigate('/payments')}" >
+                              <a href="#" onclick="navigate('/payments')" >
                             <button class="button" type="button">
                               <i class="fa-solid fa-money-bill"></i>
                             </button>
