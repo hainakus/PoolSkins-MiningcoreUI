@@ -1,6 +1,3 @@
-
-
-
 console.log("Hello World!");
 import { MarketStore } from "./store";
 import './style.scss'
@@ -14,7 +11,6 @@ import './payments'
 import './wallet'
 import './not-found'
 import './ws.service'
-
 export const _formatter = (value: number, decimal: number, unit: string) => {
   if (value === 0) {
     return "0 " + unit;
@@ -40,10 +36,10 @@ export const _formatter = (value: number, decimal: number, unit: string) => {
 }
 
 
-export const   navigate = (url: string | URL) => {
-  window.history.replaceState({}, null, url);
-  window.dispatchEvent(new PopStateEvent('popstate'));
-}
+
+
+
+
 
 
 

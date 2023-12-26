@@ -1,7 +1,7 @@
 import { createQuery } from "@datorama/akita";
 import { map, tap } from "rxjs";
 import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
-import { _formatter, navigate } from "./index";
+import { _formatter } from "./index";
 import { PoolService } from "./poolService";
 import axios from "axios";
 import { store } from "./ws.service";
@@ -96,7 +96,18 @@ class SkinA extends HTMLElement {
       toggle.classList.toggle("open-nav");
     });
 
+    this.shadowRoot.getElementById('miners_TOP').addEventListener('click', () => {
+      this.navigate('/connect')
 
+    })
+    this.shadowRoot.getElementById('wallet').addEventListener('click', () => {
+      this.navigate('/wallet')
+
+    })
+    this.shadowRoot.getElementById('payments').addEventListener('click', () => {
+      this.navigate('/payments')
+
+    })
   }
 
   renderWorkersPartial() {
@@ -518,20 +529,20 @@ class SkinA extends HTMLElement {
                             <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                    
                      
-                           <a href="#" onclick="${navigate('/connect')}"> <button class="button" type="button">
+                            <button class="button" type="button" id="miners_TOP" >
                               <i class="fa-solid fa-circle-nodes"></i>
                             </button>
-                            </a>
-                           <a href="#" onclick="${navigate('/wallet')}" >
-                            <button class="button" type="button">
+                          
+                      
+                            <button class="button" type="button" id="wallet">
                               <i class="fa-solid fa-wallet"></i>
                             </button>
-                            </a>
-                              <a href="#" onclick="${navigate('/payments')}" >
-                            <button class="button" type="button">
+                     
+                            
+                            <button class="button" type="button"  id="payments">
                               <i class="fa-solid fa-money-bill"></i>
                             </button>
-                            </a>
+                        
                             <a href="${window.location.pathname === '/' ? '' : window.location.pathname}/" >
                               <div class="pop-video">
                                   <img width="50px" class="pool-coin"
