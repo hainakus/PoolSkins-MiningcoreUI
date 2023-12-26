@@ -1,6 +1,3 @@
-
-
-
 console.log("Hello World!");
 import { MarketStore } from "./store";
 import './style.scss'
@@ -14,7 +11,6 @@ import './payments'
 import './wallet'
 import './not-found'
 import './ws.service'
-
 export const _formatter = (value: number, decimal: number, unit: string) => {
   if (value === 0) {
     return "0 " + unit;
@@ -38,6 +34,9 @@ export const _formatter = (value: number, decimal: number, unit: string) => {
     return ((value / si[i].value).toFixed(decimal).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + " " + si[i].symbol + unit);
   }
 }
+
+
+
 
 
 
