@@ -40,7 +40,10 @@ export const _formatter = (value: number, decimal: number, unit: string) => {
 }
 
 
-
+export const   navigate = (url: string | URL) => {
+  window.history.replaceState({}, null, url);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
 
 
 
