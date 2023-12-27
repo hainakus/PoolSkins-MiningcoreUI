@@ -128,7 +128,7 @@ svg {
        const wallet = inputWallet.value;
        if( wallet !== '') {
 
-         miner(wallet).subscribe( _ => {
+
 
            sendButton.style.display = 'none';
            inputWallet.style.display = 'none';
@@ -139,7 +139,7 @@ svg {
 
 
 
-         }, catchError( (e:any) => this.displayNotFound(e)), () => {})
+
        }
      })
   }
