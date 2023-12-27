@@ -23,7 +23,7 @@ export class Payments extends HTMLElement {
     this.payments?.forEach( (miner:any)  => {
 
       console.log(this.payments)
-      html +=`<tr><td>${ miner?.blockHeight }</td><td> <progress max="100" value="${miner.confirmationProgress * 100}">${miner.confirmationProgress * 100}%</progress></td><td>${miner.miner}</td><td>${miner.reward}</td></tr>`;
+      html +=`<tr><td>${ miner?.blockHeight }</td><td> <progress max="100" value="${miner.confirmationProgress * 100}">${miner.confirmationProgress * 100}%</progress></td><td>${miner.miner}</td><td>${Math.floor(miner.effort * 100)}%</td></tr>`;
       console.log(html)
 
     })
@@ -104,7 +104,7 @@ export class Payments extends HTMLElement {
             <th>Height</th>
             <th>Progress</th>
             <th>Miner</th>
-            <th>Reward</th>
+            <th>Effort</th>
 </thead>
             <tbody id="tobePaid">
             

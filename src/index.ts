@@ -1,5 +1,8 @@
 console.log("Hello World!");
 import { MarketStore } from "./store";
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
 import './style.scss'
 import './router';
 import './search'
