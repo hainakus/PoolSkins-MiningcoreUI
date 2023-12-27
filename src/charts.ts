@@ -1,14 +1,22 @@
+
+
+import ApexCharts from 'apexcharts'
+import { catchError } from "rxjs";
 import { miner } from "./api.service";
-import { catchError, tap } from "rxjs";
-import { Chart } from "chart.js";
+
 
 export class Charts extends HTMLElement {
   display = false;
   render = false;
+  address:string = null;
   constructor() {
     super();
     this.attachShadow({mode: 'open'})
+
+
+
     this.shadowRoot.innerHTML = this.html()
+
   }
 
   html() {
@@ -17,10 +25,24 @@ export class Charts extends HTMLElement {
         :host {
             display: flex;
             flex-direction: column;
-            align-items: center;
+     
             justify-content: center;
             gap: 40px;
+            margin-top: 45px;
         }
+        #wrapper {
+  position: relative;
+  background: #000524;
+  border: 1px solid #000;
+  box-shadow: 0 22px 35px -16px rgba(0, 0, 0, 0.71);
+  width: 850px;
+  margin: 0 auto;
+}
+        #chart-bar {
+  position: relative;
+  margin-top: -38px;
+}
+
          .send {
   position: relative;
   display: flex;
@@ -95,33 +117,51 @@ svg {
             </svg>
           </span>
         </button>
-        <div id="wallet"></div>
+      
     `
   }
   connectedCallback() {
+
      const sendButton = this.shadowRoot.querySelector('.send') as HTMLElement;
      const inputWallet = this.shadowRoot.querySelector('input') as HTMLInputElement;
      sendButton.addEventListener('click', () => {
        const wallet = inputWallet.value;
        if( wallet !== '') {
-         miner(wallet).subscribe( _ => {
+
+
+
            sendButton.style.display = 'none';
            inputWallet.style.display = 'none';
+           this.navigate('wallet/' + wallet)
 
 
-            this.navigate('wallet/' + wallet)
 
-         }, catchError( (e:any) => this.displayNotFound(e)), () => {})
+
+
+
+
        }
      })
   }
 
-  private renderWallet(res: any) {
-    console.log(res)
+  private renderWallet() {
+
+
+
     return `
-    <div>
-  <canvas id="myChart"></canvas>
-</div>`
+<style>
+:host{
+display: flex;
+flex-direction: column;
+    width: 100%;
+    margin-top: 45px;
+}
+</style>
+        <h1>Miner: </h1>
+       <div id="chart-area"></div>
+        <div id="chart-bar"></div>
+
+`
   }
 
   private displayNotFound(e: any) {
@@ -131,7 +171,7 @@ svg {
   }
 
   navigate(url: string | URL) {
-    window.history.pushState({}, null, url);
+    window.history.replaceState({}, null, url);
     window.dispatchEvent(new PopStateEvent('popstate'));
   }
 }
