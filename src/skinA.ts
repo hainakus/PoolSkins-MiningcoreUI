@@ -192,7 +192,7 @@ class SkinA extends HTMLElement {
             }
          `
         this.shadowRoot.getElementById('c').getRootNode().appendChild(node)
-
+        store.setBlock('kaspa')
         setTimeout(( ) => {
             this.shadowRoot.getElementById('c').getRootNode().removeChild(node)
           this.shadowRoot.getElementById('c').getRootNode().removeChild(js)
@@ -244,14 +244,14 @@ class SkinA extends HTMLElement {
     (PoolService.getapi() === 'nexa1') ? this.navigate('/firo') : this.navigate('/')
   }
   navigate(url: string | URL) {
-    window.history.pushState({}, null, url);
+    window.history.replaceState({}, null, url);
     window.dispatchEvent(new PopStateEvent('popstate'));
   }
   connectedCallback() {
 
     const forward = this.shadowRoot.getElementById('navForward');
     forward.addEventListener('click',  (  ) =>  {
-      (PoolService.getapi() === 'nexa1') ? this.navigate( '/') : this.navigate( '/firo');
+      (PoolService.getapi() === 'nexa1') ? this.navigate( ' ') : this.navigate( '/firo');
 
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     });
