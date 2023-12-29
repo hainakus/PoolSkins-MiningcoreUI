@@ -82,7 +82,7 @@ class Dashboard extends HTMLElement {
       var ttf;
       var coin;
 
-      (window.location.href.includes('firo')) ? ttf = 1.2 : ttf = 1.2;
+      (window.location.href.includes('firo')) ? ttf = 1 : ttf = 1;
       (window.location.href.includes('firo')) ? coin = ' KAS' : coin = ' KAS';
       var _ttfNetHashRate = this.poolStats?.networkStats.networkHashrate;
       var _ttfHashRate = this.poolStats?.poolStats.poolHashrate;
