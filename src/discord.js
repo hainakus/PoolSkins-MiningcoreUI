@@ -29,8 +29,8 @@ const {MessageBuilder} = require("discord-webhook-node");
 const { Webhook } = require('discord-webhook-node');
 const hook = new Webhook("https://discord.com/api/webhooks/1163050029028757515/3eTbC2kbHBS_7H1lis7-1FcZAT1jjTz17gQkJmbu0V_zKBrecEDE5dRkAwh9Nep1Omfm");
 
-const IMAGE_URL = 'https://k1pool.com/assets/media/logos/coin-nexa.png';
-hook.setUsername('Nexa Pool Bot');
+const IMAGE_URL = 'https://k1pool.com/assets/media/logos/coin-kaspa.png';
+hook.setUsername('KAS Pool Bot');
 hook.setAvatar(IMAGE_URL);
 
 const sendPoolInfo = async () => {
@@ -44,12 +44,12 @@ const sendPoolInfo = async () => {
     return (value.hashrate > 0) ? acc + 1: acc;
   }, 0)
   const embed = new MessageBuilder()
-    .setTitle('Nexa Pool Status')
+    .setTitle('KAS Pool Status')
     .addField('Pool HashRate', `${poolHashString}`, true)
     .addField('Total Blocks', `${blocksNumber ? blocksNumber : 0}`)
     .addField('Total Miners', `${totalActiveMiners}`)
     .setThumbnail(IMAGE_URL)
-    .setDescription('Oh yeah Nexa!!!')
+    .setDescription('Oh yeah KAS!!!')
     .setTimestamp();
 
   hook.send(embed).then(console.log);

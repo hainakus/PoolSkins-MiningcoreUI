@@ -38,7 +38,7 @@ export class Wallet extends HTMLElement {
             show: false
           }
         },
-        colors: ["#ffda70"],
+        colors: ["#53ebcb"],
         stroke: {
           width: 3
         },
@@ -64,7 +64,7 @@ export class Wallet extends HTMLElement {
         markers: {
           size: 5,
           colors: ["#000524"],
-          strokeColor: "#ffde63",
+          strokeColor: "#53ebcb",
           strokeWidth: 3
         },
         series: [
