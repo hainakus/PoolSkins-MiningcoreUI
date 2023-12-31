@@ -23,7 +23,7 @@ export class Payments extends HTMLElement {
     this.payments?.forEach( (miner:any)  => {
 
       console.log(this.payments)
-      html +=`<tr><td>${ miner?.blockHeight }</td><td> <progress max="100" value="${miner.confirmationProgress * 100}">${miner.confirmationProgress * 100}%</progress></td><td>${miner.miner}</td><td>${Math.floor(miner.effort * 100)}%</td></tr>`;
+      html +=`<tr><td>${ miner?.blockHeight }</td><td> <progress max="100" value="${miner.confirmationProgress * 100}">${miner.confirmationProgress * 100}%</progress></td><td><a href="/wallet/${miner.miner}"> ${miner.miner}</a></td><td>${Math.floor(miner.effort * 100)}%</td></tr>`;
       console.log(html)
 
     })
@@ -96,6 +96,12 @@ export class Payments extends HTMLElement {
       text-align: left;
       padding: 8px;
     }
+     a{
+            text-decoration:none;
+        }
+        a:-webkit-any-link {
+            color: #FFF;
+         }
         </style>
         <div class="">
         <h1>REWARDS FOR ${window.location.pathname.includes('nexa1') ? 'NEXA' : 'NEXA'}</h1>

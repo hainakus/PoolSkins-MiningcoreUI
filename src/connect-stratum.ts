@@ -34,7 +34,7 @@ export class ConnectStratum extends HTMLElement {
        ${this.topMiners?.sort((a,b) => b.hashrate - a.hashrate).map( (m, i) => `
        <tr>
         <td>${i}</td>
-        <td>${m.miner}</td>
+        <td><a href="/wallet/${m.miner}"> ${m.miner}</a></td>
         <td>${_formatter(m.hashrate, 2, 'H/s')}</td>
         <td>0.5 BTC</td>
       </tr>
@@ -72,6 +72,12 @@ export class ConnectStratum extends HTMLElement {
     color: #333333;
       background-color: #f2f2f2;
     }
+     a{
+            text-decoration:none;
+        }
+        a:-webkit-any-link {
+            color: #FFF;
+         }
   </style>
       <h2>Top 10 Miners</h2>
         <div id="minersContainer"></div>
