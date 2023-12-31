@@ -97,10 +97,19 @@ svg {
     font-size: 1.5vmin;
     font-weight: bold;
     padding: 0 4vmin;
-    box-shadow: var(--inner-shadow);
-    background: var(--greyLight-1);
+    box-shadow: none;
+    background: transparent;
     color: var(--primary);
     caret-color: var(--primary);
+}
+input {
+background-color: transparent;
+}
+input:active,
+input:focus {
+    background-color:transparent;
+    border: 2px solid #FFF;
+    border-radius: 10px;
 }
 
   h1 {
