@@ -1,5 +1,5 @@
 import { createQuery } from "@datorama/akita";
-import { map, tap } from "rxjs";
+import { interval, map, switchMap, tap } from "rxjs";
 import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { _formatter } from "./index";
 import { PoolService } from "./poolService";
@@ -19,7 +19,7 @@ class SkinA extends HTMLElement {
 
     this.attachShadow({ mode: "open" });
 
-
+    const poolService = poolStats()
     this.shadowRoot.innerHTML = this.html();
     store.query.select().pipe(tap((data: any) => {
       if(!data.loading) {
@@ -193,6 +193,10 @@ class SkinA extends HTMLElement {
          `
         this.shadowRoot.getElementById('c').getRootNode().appendChild(node)
         store.setBlock('kaspa')
+        const poolEffort =  poolService.pipe(tap( data => {
+          store.setDashBoardEffort( data.pool.poolEffort, 'kaspa')
+          store.setTopMiner(data.pool.topMiners, 'kaspa')
+        })).subscribe()
         setTimeout(( ) => {
             this.shadowRoot.getElementById('c').getRootNode().removeChild(node)
           this.shadowRoot.getElementById('c').getRootNode().removeChild(js)
@@ -202,7 +206,7 @@ class SkinA extends HTMLElement {
           console.log(e)
           document.body.removeChild(e)
           console.log(c)
-
+          poolEffort.unsubscribe()
         },1000 * 20)
       }
     }
