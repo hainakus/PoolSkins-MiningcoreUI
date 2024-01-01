@@ -192,7 +192,7 @@ class SkinA extends HTMLElement {
             }
          `
         this.shadowRoot.getElementById('c').getRootNode().appendChild(node)
-       // store.setBlock('kaspa')
+        store.setBlock('kaspa')
         setTimeout(( ) => {
             this.shadowRoot.getElementById('c').getRootNode().removeChild(node)
           this.shadowRoot.getElementById('c').getRootNode().removeChild(js)

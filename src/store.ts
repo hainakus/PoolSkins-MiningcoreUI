@@ -76,7 +76,7 @@ export class MarketStore {
 
   setBlock( coin: string) {
     this.store.setLoading(true);
-    this.store._setState((state: any) => ({...state, pool: { ...state.pool, [`${coin}`]: {...state.pool[`${coin}`], totalBlocks: state.pool[`${coin}`].totalBlocks+1  }}}))
+    this.store._setState((state: any) => ({...state, pool: { ...state.pool, [`${coin}`]: {...state.pool[`${coin}`], totalBlocks: _.cloneDeep(state.pool[`${coin}`].totalBlocks)+1  }}}))
 
     this.store.setLoading(false);
   }
