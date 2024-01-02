@@ -1,5 +1,5 @@
 import { createQuery } from "@datorama/akita";
-import { interval, map, switchMap, tap } from "rxjs";
+import { from, interval, map, switchMap, tap } from "rxjs";
 import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
 import { _formatter } from "./index";
 import { PoolService } from "./poolService";
@@ -14,7 +14,7 @@ console.log("Hello World!");
 class SkinA extends HTMLElement {
    _poolFee: any;
 
-  constructor() {
+   constructor() {
     super();
 
     this.attachShadow({ mode: "open" });
@@ -22,7 +22,7 @@ class SkinA extends HTMLElement {
     const poolService = poolStats()
     this.shadowRoot.innerHTML = this.html();
     store.query.select().pipe(tap((data: any) => {
-      if(!data.loading) {
+      if (!data.loading) {
         console.log('blocks', data?.pool?.kaspa.poolFeePercent)
         this.blocks = data?.pool?.kaspa?.totalBlocks;
         this.poolFee = data?.pool?.kaspa?.poolFeePercent
@@ -30,20 +30,189 @@ class SkinA extends HTMLElement {
       }
     })).subscribe()
 
-    ws.onmessage = (message) => {
-      console.log(`message received`, message.data)
-      const m = JSON.parse(message.data)
-      if(m.type === 'hashrateupdated' && m.miner === null && m.poolId === 'kaspa1') {
-        store.setDashBoardHasrate(m.hashrate, 'kaspa')
-        console.log(store.query.getValue())
-      }
-      if(m.type === 'hashrateupdated' && m.miner !== null && m.poolId === 'kaspa1') {
-        const m = JSON.parse(message.data)
-        store.updateTopMiner(m, 'kaspa')
-      }
+     from(this.setConffetti()).subscribe( (elements:any) => {
+        console.log('++',elements)
 
-      if(m.type === 'blockfound' && m.poolId === 'kaspa1') {
+       const { node } = elements
+       ws.onmessage = (message) => {
+         console.log(`message received`, message.data)
+         const m = JSON.parse(message.data)
+         if (m.type === 'hashrateupdated' && m.miner === null && m.poolId === 'kaspa1') {
+           store.setDashBoardHasrate(m.hashrate, 'kaspa')
+           console.log(store.query.getValue())
+         }
+         if (m.type === 'hashrateupdated' && m.miner !== null && m.poolId === 'kaspa1') {
+           const m = JSON.parse(message.data)
+           store.updateTopMiner(m, 'kaspa')
+         }
 
+         if (m.type === 'blockfound' && m.poolId === 'kaspa1') {
+
+           if (node) {
+             node.innerHTML = ` 
+                let nouvelle,
+                  ancienne,
+                  pression;
+    
+                let themeCouleur = [
+                    '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5',
+                    '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50',
+                    '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800',
+                    '#FF5722'
+                ];
+                class Particule {
+                    constructor(parent) {
+                        this.parent = parent;
+                        this.gravite = parent.gravite;
+                        this.reinit();
+                        this.forme = round(random(0, 1));
+                        this.etape = 0;
+                        this.prise = 0;
+                        this.priseFacteur = random(-0.02, 0.02);
+                        this.multFacteur = random(0.01, 0.08);
+                        this.priseAngle = 0;
+                        this.priseVitesse = 0.05;
+                    }
+                    reinit() {
+    
+                        this.position = this.parent.position.copy();
+                        this.position.y = random(-20, -100);
+                        this.position.x = random(0, width);
+                        this.velocite = createVector(random(-6, 6), random(-10, 2));
+                        this.friction = random(0.995, 0.98);
+                        this.taille = round(random(5, 15));
+                        this.moitie = this.taille / 2;
+                        this.couleur = color(random(themeCouleur));
+    
+                    }
+                    dessiner() {
+    
+                        this.etape = 0.5 + Math.sin(this.velocite.y * 20) * 0.5;
+    
+                        this.prise = this.priseFacteur + Math.cos(this.priseAngle) * this.multFacteur;
+                        this.priseAngle += this.priseVitesse;
+                        translate(this.position.x, this.position.y);
+                        rotate(this.velocite.x * 2);
+                        scale(1, this.etape);
+                        noStroke();
+                        fill(this.couleur);
+    
+                        if (this.forme === 0) {
+                            rect(-this.moitie, -this.moitie, this.taille, this.taille);
+                        } else {
+                            ellipse(0, 0, this.taille, this.taille);
+                        }
+    
+                        resetMatrix();
+                    }
+                    integration() {
+                        this.velocite.add(this.gravite);
+                        this.velocite.x += this.prise;
+                        this.velocite.mult(this.friction);
+                        this.position.add(this.velocite);
+                        if (this.position.y > height) {
+                            this.reinit();
+                        }
+    
+                        if (this.position.x < 0) {
+                            this.reinit();
+                        }
+                        if (this.position.x > width + 10) {
+                            this.reinit();
+                        }
+                    }
+                    rendu() {
+                        this.integration();
+                        this.dessiner();
+    
+                    }
+                }
+                class SystemeDeParticules {
+                    constructor(nombreMax, position, gravite) {
+                        this.position = position.copy();
+                        this.nombreMax = nombreMax;
+                        this.gravite = createVector(0, 0.1);
+                        this.friction = 0.98;
+                        // le tableau
+                        this.particules = [];
+                        for (var i = 0; i < this.nombreMax; i++) {
+                            this.particules.push(new Particule(this));
+                        }
+                    }
+                    rendu() {
+                        if (pression) {
+                            var force = p5.Vector.sub(nouvelle, ancienne);
+                            this.gravite.x = force.x / 20;
+                            this.gravite.y = force.y / 20;
+                        }
+    
+                        this.particules.forEach(particules => particules.rendu());
+                    }
+                }
+                let confettis;
+                
+                function setup() {
+                    createCanvas(window.innerWidth, window.innerHeight);
+                   
+                  
+                    frameRate(60);
+                    ancienne = createVector(0, 0);
+                    nouvelle = createVector(0, 0);
+                    confettis = new SystemeDeParticules(500, createVector(width / 2, -20));
+                    // Get a reference to the canvas element
+                  
+                }
+    
+                function draw() {
+                      background(color("#2a2e3c"));
+                    
+                    nouvelle.x = mouseX;
+                    nouvelle.y = mouseY;
+                    confettis.rendu();
+                    ancienne.x = nouvelle.x;
+                    ancienne.y = nouvelle.y;
+                           
+                          
+    
+                }
+    
+                function windowResized() {
+                     resizeCanvas(windowWidth, windowHeight);
+      confettis.position = createVector(width / 2, -40);
+                }
+    
+                function mousePressed() {
+                 
+                }
+    
+                function mouseReleased() {
+                
+                }
+             `
+           }
+           store.setBlock('kaspa')
+           const poolEffort = poolService.pipe(tap(data => {
+             store.setDashBoardEffort(data.pool.poolEffort, 'kaspa')
+             store.setTopMiner(data.pool.topMiners, 'kaspa')
+           })).subscribe()
+           setTimeout(() => {
+             // this.shadowRoot.getElementById('c').getRootNode().removeChild(node)
+             //this.shadowRoot.getElementById('c').getRootNode().removeChild(js)
+             if (node) {
+
+               node.innerHTML = ''
+             }
+
+             poolEffort.unsubscribe()
+           }, 1000 * 20)
+         }
+       }
+     })
+
+  }
+
+  setConffetti() {
+    return new Promise( ( resolve, reject) => {
         const js = document.createElement('script')
         js.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js"
         this.shadowRoot.getRootNode().appendChild(js)
@@ -51,165 +220,15 @@ class SkinA extends HTMLElement {
         //ws.send('hello world')
 
         const node = document.createElement('script')
-        node.innerHTML = ` 
-            let nouvelle,
-              ancienne,
-              pression;
 
-            let themeCouleur = [
-                '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5',
-                '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50',
-                '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800',
-                '#FF5722'
-            ];
-            class Particule {
-                constructor(parent) {
-                    this.parent = parent;
-                    this.gravite = parent.gravite;
-                    this.reinit();
-                    this.forme = round(random(0, 1));
-                    this.etape = 0;
-                    this.prise = 0;
-                    this.priseFacteur = random(-0.02, 0.02);
-                    this.multFacteur = random(0.01, 0.08);
-                    this.priseAngle = 0;
-                    this.priseVitesse = 0.05;
-                }
-                reinit() {
-
-                    this.position = this.parent.position.copy();
-                    this.position.y = random(-20, -100);
-                    this.position.x = random(0, width);
-                    this.velocite = createVector(random(-6, 6), random(-10, 2));
-                    this.friction = random(0.995, 0.98);
-                    this.taille = round(random(5, 15));
-                    this.moitie = this.taille / 2;
-                    this.couleur = color(random(themeCouleur));
-
-                }
-                dessiner() {
-
-                    this.etape = 0.5 + Math.sin(this.velocite.y * 20) * 0.5;
-
-                    this.prise = this.priseFacteur + Math.cos(this.priseAngle) * this.multFacteur;
-                    this.priseAngle += this.priseVitesse;
-                    translate(this.position.x, this.position.y);
-                    rotate(this.velocite.x * 2);
-                    scale(1, this.etape);
-                    noStroke();
-                    fill(this.couleur);
-
-                    if (this.forme === 0) {
-                        rect(-this.moitie, -this.moitie, this.taille, this.taille);
-                    } else {
-                        ellipse(0, 0, this.taille, this.taille);
-                    }
-
-                    resetMatrix();
-                }
-                integration() {
-                    this.velocite.add(this.gravite);
-                    this.velocite.x += this.prise;
-                    this.velocite.mult(this.friction);
-                    this.position.add(this.velocite);
-                    if (this.position.y > height) {
-                        this.reinit();
-                    }
-
-                    if (this.position.x < 0) {
-                        this.reinit();
-                    }
-                    if (this.position.x > width + 10) {
-                        this.reinit();
-                    }
-                }
-                rendu() {
-                    this.integration();
-                    this.dessiner();
-
-                }
-            }
-            class SystemeDeParticules {
-                constructor(nombreMax, position, gravite) {
-                    this.position = position.copy();
-                    this.nombreMax = nombreMax;
-                    this.gravite = createVector(0, 0.1);
-                    this.friction = 0.98;
-                    // le tableau
-                    this.particules = [];
-                    for (var i = 0; i < this.nombreMax; i++) {
-                        this.particules.push(new Particule(this));
-                    }
-                }
-                rendu() {
-                    if (pression) {
-                        var force = p5.Vector.sub(nouvelle, ancienne);
-                        this.gravite.x = force.x / 20;
-                        this.gravite.y = force.y / 20;
-                    }
-
-                    this.particules.forEach(particules => particules.rendu());
-                }
-            }
-            let confettis;
-            
-            function setup() {
-                createCanvas(window.innerWidth, window.innerHeight);
-               
-              
-                frameRate(60);
-                ancienne = createVector(0, 0);
-                nouvelle = createVector(0, 0);
-                confettis = new SystemeDeParticules(500, createVector(width / 2, -20));
-                // Get a reference to the canvas element
-              
-            }
-
-            function draw() {
-                  background(color("#2a2e3c"));
-                
-                nouvelle.x = mouseX;
-                nouvelle.y = mouseY;
-                confettis.rendu();
-                ancienne.x = nouvelle.x;
-                ancienne.y = nouvelle.y;
-                       
-                      
-
-            }
-
-            function windowResized() {
-                 resizeCanvas(windowWidth, windowHeight);
-  confettis.position = createVector(width / 2, -40);
-            }
-
-            function mousePressed() {
-             
-            }
-
-            function mouseReleased() {
-            
-            }
-         `
         this.shadowRoot.getElementById('c').getRootNode().appendChild(node)
-        store.setBlock('kaspa')
-        const poolEffort =  poolService.pipe(tap( data => {
-          store.setDashBoardEffort( data.pool.poolEffort, 'kaspa')
-          store.setTopMiner(data.pool.topMiners, 'kaspa')
-        })).subscribe()
-        setTimeout(( ) => {
-            this.shadowRoot.getElementById('c').getRootNode().removeChild(node)
-          this.shadowRoot.getElementById('c').getRootNode().removeChild(js)
-          console.log(document.querySelector('body'))
-          const c = document.querySelector('body')
-          const e = document.getElementById('defaultCanvas0')
-          console.log(e)
-          document.body.removeChild(e)
-          console.log(c)
-          poolEffort.unsubscribe()
-        },1000 * 20)
-      }
-    }
+
+          document.body.onload = () => {
+          //const c = document.querySelector('body')
+
+          resolve({ node })
+        }
+    })
   }
   get poolFee () {
     return this._poolFee
