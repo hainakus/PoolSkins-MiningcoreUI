@@ -33,7 +33,7 @@ export class Payments extends HTMLElement {
     this.payments?.forEach( (miner:any)  => {
 
       console.log(this.payments)
-      html +=`<tr><td>Miner ${ miner }</td><td> ${miner} paid NEXA</td></tr>`;
+      html +=`<tr><td>Miner ${ miner }</td><td> ${miner} paid DOGETHER</td></tr>`;
       console.log(html)
 
     })
@@ -104,7 +104,7 @@ export class Payments extends HTMLElement {
          }
         </style>
         <div class="">
-        <h1>REWARDS FOR ${window.location.pathname.includes('nexa1') ? 'NEXA' : 'NEXA'}</h1>
+        <h1>REWARDS FOR ${window.location.pathname.includes('nexa1') ? 'DOGETHER' : 'DOGETHER'}</h1>
         <table>
             <thead>
             <th>Height</th>

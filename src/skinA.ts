@@ -259,7 +259,7 @@ class SkinA extends HTMLElement {
     (!window.location.pathname.includes('firo')) ? PoolService.setApi('nexa1') : PoolService.setApi('nexa1');
     axios.defaults.baseURL = 'https://api.hydranetwork.online/api/pools/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'nexa1') ? image.src = 'https://k1pool.com/assets/media/logos/coin-nexa.png' : image.src = 'https://k1pool.com/assets/media/logos/coin-nexa.png';
+    (PoolService.getapi() === 'nexa1') ? image.src = 'https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/dogether.webp' : image.src = 'https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/dogether.webp';
 
 
     this.renderWorkersPartial();
@@ -754,7 +754,7 @@ class SkinA extends HTMLElement {
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
-                        ${window.location.href.includes('firo') ? 'NEXA' : 'NEXA'}  
+                        ${window.location.href.includes('firo') ? 'DOGETHER' : 'DOGETHER'}  
                         <p id="price"></p> USD
                       
                       </div>
