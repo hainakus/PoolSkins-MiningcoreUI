@@ -73,6 +73,13 @@ export class MarketStore {
           }}) }}}));
     this.store.setLoading(false);
   }
+
+  setBlock( coin: string) {
+    this.store.setLoading(true);
+    this.store._setState((state: any) => ({...state, pool: { ...state.pool, [`${coin}`]: {...state.pool[`${coin}`], totalBlocks: state.pool[`${coin}`].totalBlocks++  }}}))
+
+    this.store.setLoading(false);
+  }
 }
 
 

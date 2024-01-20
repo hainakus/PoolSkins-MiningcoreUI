@@ -5,7 +5,13 @@ import { Router, Params, RouterLocation } from "@vaadin/router";
 import { _formatter } from "./index";
 
 export class Wallet extends HTMLElement {
-
+  private _workers: any[];
+  get workers () {
+    return this._workers;
+  }
+  set workers(value:any[]) {
+    this._workers = value
+  }
   constructor() {
     super();
     this.attachShadow({ mode: 'open' })
@@ -17,7 +23,42 @@ export class Wallet extends HTMLElement {
     console.log( location.pathname.split('/').reverse()[0])
     const wallet = location.pathname.split('/').reverse()[0];
     miner(wallet).subscribe(  data => {
-        console.log(data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
+      console.log(data.performance.workers)
+      const workers = data.performance.workers
+      const performanceData = []
+      for (const worker in workers) {
+        performanceData.push({ id: worker, hashrate: workers[worker].hashrate })
+      }
+      this.workers = performanceData
+
+      const htmlContainer = this.shadowRoot.getElementById('workersContainer');
+      htmlContainer.innerHTML = ''
+      const topMinersHTML = `
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Worker</th>
+        <th>Hashrate</th>
+   
+      </tr>
+    </thead>
+    <tbody>
+       ${this.workers?.sort((a,b) => b.hashrate - a.hashrate).map( (m, i) => `
+       <tr>
+        <td>${i}</td>
+        <td> ${m.id}</td>
+        <td>${_formatter(m.hashrate, 2, 'H/s')}</td>
+  
+      </tr>
+      
+      `).join('')}
+    </tbody>
+  </table>
+`;
+      htmlContainer.innerHTML = topMinersHTML;
+
+      console.log(data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
 
           const val = Object.values(i.workers).reduce( (paymnts:any, val:any) => {
             paymnts += val.hashrate
@@ -69,6 +110,7 @@ export class Wallet extends HTMLElement {
         },
         series: [
           {
+            name: "MINER HASHRATE",
             data: data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
 
               const val = Object.values(i.workers).reduce( (paymnts:any, val:any) => {
@@ -182,13 +224,67 @@ margin-top: 100px;
   <div id="chart-bar">
 
   </div>
-  
- 
-</div>
- 
+  </div>
+   <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+    color: #333333;
+      background-color: #f2f2f2;
+    }
+     a{
+            text-decoration:none;
+        }
+        a:-webkit-any-link {
+            color: #FFF;
+         }
+  </style>
+      <h2>Miner workers</h2>
+        <div id="workersContainer"></div>
+
+      
      `;
   }
+  renderWorkers() {
+    return `
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
 
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+    color: #333333;
+      background-color: #f2f2f2;
+    }
+     a{
+            text-decoration:none;
+        }
+        a:-webkit-any-link {
+            color: #FFF;
+         }
+  </style>
+      <h2>Miner workers</h2>
+        <div id="workersContainer"></div>
+     `
+  }
 }
 
 customElements.define('x-wallet', Wallet);
