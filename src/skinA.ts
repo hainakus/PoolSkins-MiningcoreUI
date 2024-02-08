@@ -626,8 +626,8 @@ class SkinA extends HTMLElement {
 
         @keyframes fade {
             0%,100% { color: #FFF }
-            20% {  color: #fddd79  }
-            40% {  color: #fddd79 }
+            20% {  color: #9a1ccb  }
+            40% {  color: #9a1ccb }
         }
         x-card {
         position: relative;
