@@ -7,7 +7,7 @@ export interface MarketStoreState {
 }
 
 export interface Ethone<T = string> {
-    kaspa: {
+    [T:string]: {
         topMiners: any[];
         poolStats: any;
         poolHashrate: number,

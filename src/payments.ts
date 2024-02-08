@@ -63,6 +63,18 @@ export class Payments extends HTMLElement {
   html() {
     return `
         <style>
+        
+        :host {
+    padding: 0px;
+    top: 40px;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
         h1 {
             margin-top: 45px;
         }
@@ -98,7 +110,7 @@ export class Payments extends HTMLElement {
     }
         </style>
         <div class="">
-        <h1>REWARDS FOR ${window.location.pathname.includes('nexa1') ? 'NEXA' : 'NEXA'}</h1>
+        <h1>REWARDS FOR ${window.location.pathname.includes('alph1') ? 'ALPH' : 'ALPH'}</h1>
         <table>
             <thead>
             <th>Height</th>

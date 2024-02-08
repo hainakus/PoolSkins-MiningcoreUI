@@ -56,10 +56,21 @@ export class ConnectStratum extends HTMLElement {
   renderFiro() {
     return `
   <style>
+  :host {
+    padding: 0px;
+  top: 40px;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
     table {
       border-collapse: collapse;
       width: 100%;
-      margin-top: 20px;
+     
     }
 
     th, td {
@@ -69,8 +80,8 @@ export class ConnectStratum extends HTMLElement {
     }
 
     th {
-    color: #333333;
-      background-color: #f2f2f2;
+    color: #ffffff;
+      background-color: rgba(242,242,242,0);
     }
   </style>
       <h2>Top 10 Miners</h2>
@@ -96,13 +107,7 @@ export class ConnectStratum extends HTMLElement {
               color: #999ba5;
               font-size: larger;
           }
-          :host {
-            margin-top: 40px;
-            display: flex;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-          }
+         
           * > div {
             display: flex;
             flex-direction: row;
@@ -110,7 +115,7 @@ export class ConnectStratum extends HTMLElement {
           }
         </style>
         <div class="">
-        <h1>STRATUM CONNECT FOR ${ PoolService.getapi().toLowerCase().includes('kaspa1') ? 'NEXA': 'NEXA'}</h1>
+        <h1>STRATUM CONNECT FOR ${ PoolService.getapi().toLowerCase().includes('kaspa1') ? 'DERO': 'DERO'}</h1>
             ${ PoolService.getapi().toLowerCase().includes('kaspa1') ? this.renderFiro() : this.renderFiro() }
         </div>
     `

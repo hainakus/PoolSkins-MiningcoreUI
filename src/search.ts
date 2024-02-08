@@ -8,6 +8,18 @@ export class Search extends HTMLElement {
   html() {
     return `
         <style>
+        
+          :host {
+    padding: 0px;
+  top: 40px;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
           .sbx-custom {
   display: inline-block;
   position: relative;

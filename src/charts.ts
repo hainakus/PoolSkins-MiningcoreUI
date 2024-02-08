@@ -22,14 +22,18 @@ export class Charts extends HTMLElement {
   html() {
     return `
         <style>
-        :host {
-            display: flex;
-            flex-direction: column;
-     
-            justify-content: center;
-            gap: 40px;
-            margin-top: 45px;
-        }
+   :host {
+    padding: 0px;
+  top: 40px;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+}
         #wrapper {
   position: relative;
   background: #000524;
@@ -47,11 +51,13 @@ export class Charts extends HTMLElement {
   position: relative;
   display: flex;
   align-items: center;
-  color: white;
+  color: #ffffff;
   background: transparent;
   border: none;
   font-family: inherit;
   padding: 0;
+  width: 100%;
+  justify-content: center;
   border-radius: 3rem;
   font-size: 2rem;
   font-variation-settings: "wght" 500;
@@ -69,7 +75,7 @@ export class Charts extends HTMLElement {
 }
 
 .icon {
-  display: block;
+
   padding: 1rem;
    box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
   border-radius: 50%;
@@ -89,7 +95,7 @@ svg {
   
 }
   input {
-    width: 15vmin;
+    width: 90%;
     height: 4vmin;
     border: none;
     border-radius: 1rem;
@@ -97,9 +103,9 @@ svg {
     font-size: 1.5vmin;
     font-weight: bold;
     padding: 0 4vmin;
-    box-shadow: var(--inner-shadow);
+
     background: var(--greyLight-1);
-    color: var(--primary);
+    color: #ffffff;
     caret-color: var(--primary);
 }
 
@@ -150,11 +156,16 @@ svg {
 
     return `
 <style>
-:host{
-display: flex;
-flex-direction: column;
+  :host {
+    padding: 0px;
+  top: 40px;
+    height: 100%;
     width: 100%;
-    margin-top: 45px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
 }
 </style>
         <h1>Miner: </h1>

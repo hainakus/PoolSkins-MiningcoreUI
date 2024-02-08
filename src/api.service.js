@@ -4,7 +4,7 @@ const { defer, map, of } = require("rxjs");
 
 
 
-axios.defaults.baseURL = 'http://hydranetwork.online:4000/api/pools/nexa1';
+axios.defaults.baseURL = 'http://hydranetwork.online:7000/api/pools/alph1';
 
  const minerList = () => defer( () => axios.get('/miners')).pipe(map( (axiosResponse) => axiosResponse.data ))
 

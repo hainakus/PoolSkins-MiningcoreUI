@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"/><title>NEOX POOLIN MARKET</title><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"><base href="#/"><script src="https://kit.fontawesome.com/4040525c72.js" crossorigin="anonymous"></script><script defer="defer" src="main.js"></script></head><body><style>@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+<!doctype html><html><head><meta charset="utf-8"/><title>HYDRA NET ALPH</title><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"><link rel="icon" type="image/x-icon" href="https://explorer.dero.io/static/static/logo.png"><meta property="og:image" content="https://explorer.dero.io/static/static/logo.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="robots" content="index, follow"><base href="/"><script src="https://kit.fontawesome.com/4040525c72.js" crossorigin="anonymous"></script><script defer="defer" src="main.js"></script></head><body><style>@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
         * {
             outline: none;
             box-sizing: border-box;
@@ -22,7 +22,7 @@
             --scrollbar-bg: rgb(1 2 3 / 40%);
             --primary: inherit;
             --white: #ffffff;
-            --greyLight-1: #e4ebf5;
+            --greyLight-1: rgba(228, 235, 245, 0);
             --greyLight-2: #c8d0e7;
             --shadow: 0.3rem 0.3rem 0.6rem #c8d0e7,
             -0.2rem -0.2rem 0.5rem #ffffff;
@@ -57,6 +57,7 @@
             right: 0;
             left: 0;
             bottom: 0;
+            z-index: -10;
         }
         body {
             height:100vh;
@@ -74,6 +75,9 @@
             100% {
                 background-position: 0% 50%;
             }
+        }
+        h4 {
+            font-weight: 100!important;
         }</style><div id="outlet"></div><style>#outlet > .leaving {
             animation: 1s fadeOut ease-in-out;
         }
