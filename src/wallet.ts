@@ -1,12 +1,12 @@
-
 import ApexCharts from "apexcharts";
-import { miner } from "./api.service";
-import { Router, Params, RouterLocation } from "@vaadin/router";
+import { getCoinPrice, miner, poolStats } from "./api.service";
+import { RouterLocation } from "@vaadin/router";
 import { _formatter } from "./index";
+import { firstValueFrom, interval, switchMap } from "rxjs";
 
 export class Wallet extends HTMLElement {
   private _hashrate: any;
-
+  private minerHash:  number;
   constructor() {
     super();
     this.attachShadow({ mode: 'open' })
@@ -23,23 +23,53 @@ export class Wallet extends HTMLElement {
     const location : RouterLocation = window.location as unknown as RouterLocation
     console.log( location.pathname.split('/').reverse()[0])
     const wallet = location.pathname.split('/').reverse()[0];
-    miner(wallet).subscribe(  data => {
+
+    interval(15000).pipe(switchMap( () => miner(wallet))).subscribe( async (data) => {
+      this.minerData = data;
+      this.minerHash = data.performanceSamples.map((i: any) => {
+        let datas: any[] = [];
+
+        const val = Object.values(i.workers).reduce((paymnts: any, val: any) => {
+          paymnts += val.hashrate
+          return paymnts
+        }, 0) as number
+
+        datas = [...datas, ...[i.created, val]]
+        return datas
+      }).splice(0, 140).pop()[1]
+
+      console.log(this.minerHash)
+      this.shadowRoot.getElementById('current').innerHTML = await this.calculateMinerReward(this.minerHash) + ' EUR'
+    })
+
+    miner(wallet).subscribe(  async data => {
       console.log(data)
       this.minerData = data;
+      this.minerHash = data.performanceSamples.map((i: any) => {
+        let datas: any[] = [];
 
+        const val = Object.values(i.workers).reduce((paymnts: any, val: any) => {
+          paymnts += val.hashrate
+          return paymnts
+        }, 0) as number
+
+        datas = [...datas, ...[i.created, val]]
+        return datas
+      }).splice(0, 140).pop()[1]
       this.shadowRoot.getElementById('total').innerHTML = this.minerData?.totalPaid.toFixed(2) + ' ALPH'
       this.shadowRoot.getElementById('today').innerHTML = this.minerData?.todayPaid.toFixed(2) + ' ALPH'
+      this.shadowRoot.getElementById('current').innerHTML = await this.calculateMinerReward(this.minerHash) + ' EUR'
+      console.log(data.performanceSamples.map((i: any) => {
+        let datas: any[] = [];
 
-      console.log(data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
+        const val = Object.values(i.workers).reduce((paymnts: any, val: any) => {
+          paymnts += val.hashrate
+          return paymnts
+        }, 0) as number
 
-          const val = Object.values(i.workers).reduce( (paymnts:any, val:any) => {
-            paymnts += val.hashrate
-            return paymnts
-          }, 0) as number
-
-          datas = [...datas, ...[ i.created, _formatter(val,  3,'h/s') ]]
-          return datas
-        }).splice(0, 140))
+        datas = [...datas, ...[i.created, _formatter(val, 3, 'h/s')]]
+        return datas
+      }).splice(0, 140))
       var options1 = {
         chart: {
           id: "chart2",
@@ -82,14 +112,15 @@ export class Wallet extends HTMLElement {
         },
         series: [
           {
-            data: data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
+            data: data.performanceSamples.map((i: any) => {
+              let datas: any[] = [];
 
-              const val = Object.values(i.workers).reduce( (paymnts:any, val:any) => {
+              const val = Object.values(i.workers).reduce((paymnts: any, val: any) => {
                 paymnts += val.hashrate
                 return paymnts
               }, 0) as number
 
-              datas = [...datas, ...[ i.created, _formatter(val,  3,'h/s') ]]
+              datas = [...datas, ...[i.created, _formatter(val, 3, 'h/s')]]
               return datas.splice(0, 40)
             }).reverse().splice(0, 40).reverse()
           }
@@ -163,115 +194,35 @@ export class Wallet extends HTMLElement {
 
   }
 
-  onflyRewardCalculation() {
-    // const ApiUrl = 'https://api.alephium-pool.com';
-    //
-    // function statsApiCall(action) {
-    //   return fetch(`${ApiUrl}${action}`)
-    //     .then(response => response.json())
-    // }
-    //
-    // function fetchPoolProfit() {
-    //   return statsApiCall('/profit');
-    // }
-    //
-    // function fetchRate() {
-    //   return statsApiCall(`/rate`)
-    // }
-    //
-    // function getPoolProfitUSD(rate, profit) {
-    //   return profit * rate
-    // }
-    //
-    // function perHour(value) {
-    //   return (value / 24);
-    // }
-    //
-    // function costsPerTime(powerConsumption, electricityCosts, multiplier = 1) {
-    //   return powerConsumption * multiplier / 1000 * electricityCosts;
-    // }
-    //
-    // function perWeek(value) {
-    //   return (value * 7);
-    // }
-    //
-    // function addCell(td) {
-    //   return td.insertCell();
-    // }
-    //
-    // function addValue(tr, value, currencyValue = '', sign = '') {
-    //   tr.innerHTML = `${sign}` + ` ${parseFloat(value).toFixed(4)}` + ` ${currencyValue}`
-    // }
-    //
-    // // @ts-ignore
-    // function addRow(tbody, period, reward, income, costs, profit, currencyValue) {
-    //   let td = tbody.insertRow();
-    //   let trPeriod = td.insertCell();
-    //   trPeriod.innerHTML = period;
-    //   addValue(addCell(td), reward, 'ALPH');
-    //   addValue(addCell(td), income, currencyValue);
-    //   addValue(addCell(td), costs, currencyValue, '-');
-    //   addValue(addCell(td), profit, currencyValue);
-    // }
-    //
-    // // @ts-ignore
-    // function generateTable(hashrateValue: number) {
-    //
-    //
-    //   const powerConsumptionValue = calculatorForm.power_consumption.value;
-    //   const currencyValue = "USD";
-    //   const electricityCostsValue = calculatorForm.electricity_costs.value;
-    //
-    //   Promise.all([fetchRate(), fetchPoolProfit()]).then(function([object1, object2]) {
-    //     let tbody = document.getElementsByTagName('tbody')[0];
-    //     tbody.innerHTML = "";
-    //
-    //     let reward = object2.profit * hashrateValue;
-    //     let income = getPoolProfitUSD(object1.rate, reward);
-    //
-    //     addRow(
-    //       tbody,
-    //       '1 hour',
-    //       perHour(reward),
-    //       perHour(income),
-    //       costsPerTime(powerConsumptionValue, electricityCostsValue),
-    //       perHour(income) - costsPerTime(powerConsumptionValue, electricityCostsValue),
-    //       currencyValue)
-    //
-    //     addRow(
-    //       tbody,
-    //       '24 hours',
-    //       reward,
-    //       income,
-    //       costsPerTime(powerConsumptionValue, electricityCostsValue, 24),
-    //       income - costsPerTime(powerConsumptionValue, electricityCostsValue, 24),
-    //       currencyValue)
-    //
-    //     addRow(
-    //       tbody,
-    //       '7 days',
-    //       perWeek(reward),
-    //       perWeek(income),
-    //       costsPerTime(powerConsumptionValue, electricityCostsValue, 168),
-    //       perWeek(income) - costsPerTime(powerConsumptionValue, electricityCostsValue, 168),
-    //       currencyValue)
-    //   })
-    //
-    // }
-    //
-    // const calculatorForm = document.forms.calculator_form;
-    //
-    // calculatorForm.addEventListener("submit", function (event) {
-    //   event.preventDefault();
-    //   generateTable(calculatorForm);
-    // });
-    //
-    // function init(calculatorForm) {
-    //   generateTable(calculatorForm);
-    // }
-    //
-    // init(calculatorForm);
+  async calculateMinerReward(hashrate: number) {
+    // Calculate the miner's share of the total network hashrate
+    const networkStats = await firstValueFrom(poolStats())
+    console.log("network", networkStats, hashrate)
+    const minerShare = hashrate  / networkStats.pool.networkStats.networkHashrate
+
+    // Calculate the average block reward
+    const totalBlocksperday =  24 * 60 * 60 / 64 * 16 // Assumes a 64 aleph block time
+     console.log(minerShare)
+    // Calculate the miner's reward per block
+
+
+
+    const totalReward24h = minerShare * totalBlocksperday * 3
+    const coinPrice = await firstValueFrom(getCoinPrice())
+    console.log(coinPrice, totalReward24h)
+    // Calculate the total value of the miner's reward in 24 hours
+    return (totalReward24h * parseInt(coinPrice.rate)).toFixed(2);
   }
+
+// // Example usage:
+//   const hashrate = 100; // Miner's hashrate in TH/s
+//   const blockchainDifficulty = 1000000; // Current blockchain difficulty
+//   const currentHashrate = 1000; // Total network hashrate in TH/s
+//   const coinPrice = 50; // Price of the coin in USD
+//
+//   const reward24h = calculateMinerReward(hashrate, blockchainDifficulty, currentHashrate, coinPrice);
+//   console.log("Miner reward in 24 hours:", reward24h.toFixed(2), "USD");
+
   html() {
 
     return `
@@ -333,7 +284,7 @@ color: #ff0080;
 </div>
  <div>
   <h1>Reward 24h</h1>
-      <p>234 ALPH</p>
+      <p id="current">0</p>
 </div> 
 </div>
      `;
