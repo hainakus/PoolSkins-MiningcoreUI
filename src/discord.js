@@ -49,7 +49,7 @@ const sendPoolInfo = async () => {
     .addField('Total Blocks', `${blocksNumber ? blocksNumber : 0}`)
     .addField('Total Miners', `${totalActiveMiners}`)
     .setThumbnail(IMAGE_URL)
-    .setDescription('Oh yeah Nexa!!!')
+    .setDescription('Oh yeah alph!!!')
     .setTimestamp();
 
   hook.send(embed).then(console.log);

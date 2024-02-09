@@ -33,7 +33,7 @@ export class Payments extends HTMLElement {
     this.payments?.forEach( (miner:any)  => {
 
       console.log(this.payments)
-      html +=`<tr><td>Miner ${ miner }</td><td> ${miner} paid NEXA</td></tr>`;
+      html +=`<tr><td>Miner ${ miner }</td><td> ${miner} paid </td></tr>`;
       console.log(html)
 
     })
