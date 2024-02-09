@@ -6,7 +6,7 @@ import { poolStats } from "./api.service";
 
 
 
-const baseURL = 'http://hydranetwork.online:7000/api/pools/';
+const baseURL = 'https://api.hydranetwork.online/api/pools/';
 
 export const store = new MarketStore();
 
@@ -17,9 +17,10 @@ poolService.subscribe( message => {
   store.setDashBoard(message.pool, 'kaspa')
   console.log(store.query.getValue())
 })
-export const ws = new WebSocket('ws://hydranetwork.online:7000/notifications')
+export const ws = new WebSocket('wss://api.hydranetwork.online/notifications')
 
 const poolEffort = interval(55000).pipe(switchMap(_ => poolService.pipe(tap( data => {
+  console.log("POOOL", data)
  store.setDashBoardEffort( data.pool.poolEffort, 'kaspa')
   store.setTopMiner(data.pool.topMiners, 'kaspa')
 })))).subscribe()

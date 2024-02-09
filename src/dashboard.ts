@@ -86,7 +86,7 @@ class Dashboard extends HTMLElement {
       (window.location.href.includes('firo')) ? coin = ' ALPH' : coin = ' ALPH';
       var _ttfNetHashRate = this.poolStats?.networkStats.networkHashrate;
       var _ttfHashRate = this.poolStats?.poolStats?.poolHashrate;
-      console.log('pool',_ttfHashRate)
+      console.log('pool',this.poolStats?.poolEffort)
       // _ttfHashRate = 46992853600.7466667
 
         const timeToFind = this.readableSeconds(_ttfNetHashRate / _ttfHashRate * ttf);

@@ -79,7 +79,7 @@ export class Payments extends HTMLElement {
             margin-top: 45px;
         }
  progress::-webkit-progress-value {
-            background-color: #ffe844; /* Set the color for WebKit browsers (Chrome, Safari) */
+            background-color: #FF0080; /* Set the color for WebKit browsers (Chrome, Safari) */
         }
 
         /* Style for the progress bar track */
@@ -89,7 +89,7 @@ export class Payments extends HTMLElement {
 
         /* Style for the progress bar value for other browsers */
         progress::-moz-progress-bar {
-            background-color: #ffe844; /* Set the color for Mozilla Firefox */
+            background-color: #FF0080; /* Set the color for Mozilla Firefox */
         }
 
         /* Style for the progress bar track for other browsers */
@@ -110,7 +110,7 @@ export class Payments extends HTMLElement {
     }
         </style>
         <div class="">
-        <h1>REWARDS FOR ${window.location.pathname.includes('alph1') ? 'ALPH' : 'ALPH'}</h1>
+        <h1>REWARDS FOR ${window.location.pathname.includes('alph') ? 'ALPH' : 'ALPH'}</h1>
         <table>
             <thead>
             <th>Height</th>

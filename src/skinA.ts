@@ -33,16 +33,16 @@ class SkinA extends HTMLElement {
     ws.onmessage = (message) => {
       console.log(`message received`, message.data)
       const m = JSON.parse(message.data)
-      if(m.type === 'hashrateupdated' && m.miner === null && m.poolId === 'alph1') {
+      if(m.type === 'hashrateupdated' && m.miner === null && m.poolId === 'alph') {
         store.setDashBoardHasrate(m.hashrate, 'kaspa')
         console.log(store.query.getValue())
       }
-      if(m.type === 'hashrateupdated' && m.miner !== null && m.poolId === 'alph1') {
+      if(m.type === 'hashrateupdated' && m.miner !== null && m.poolId === 'alph') {
         const m = JSON.parse(message.data)
         store.updateTopMiner(m, 'kaspa')
       }
 
-      if(m.type === 'blockfound' && m.poolId === 'alph1') {
+      if(m.type === 'blockfound' && m.poolId === 'alph') {
 
         const js = document.createElement('script')
         js.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js"
@@ -241,7 +241,7 @@ class SkinA extends HTMLElement {
   changePool() {
 
 
-    (PoolService.getapi() === 'alph1') ? this.navigate('/') : this.navigate('/')
+    (PoolService.getapi() === 'alph') ? this.navigate('/') : this.navigate('/')
   }
   navigate(url: string | URL) {
     window.history.pushState({}, null, url);
@@ -251,13 +251,13 @@ class SkinA extends HTMLElement {
 
     const forward = this.shadowRoot.getElementById('navForward');
     forward.addEventListener('click',  (  ) =>  {
-      (PoolService.getapi() === 'alph1') ? this.navigate( '/') : this.navigate( '/');
+      (PoolService.getapi() === 'alph') ? this.navigate( '/') : this.navigate( '/');
 
       window.dispatchEvent(new CustomEvent( 'togglePool'));
     });
 
-    (!window.location.pathname.includes('firo')) ? PoolService.setApi('alph1') : PoolService.setApi('alph1');
-    axios.defaults.baseURL = 'http://hydranetwork.online:7000/api/pools/' + PoolService.getapi();
+    (!window.location.pathname.includes('firo')) ? PoolService.setApi('alph') : PoolService.setApi('alph');
+    axios.defaults.baseURL = 'https://api.hydranetwork.online/api/pools/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
     (PoolService.getapi() === 'dero') ? image.src = 'https://solopool.org/public/icons/alph.png' : image.src = 'https://solopool.org/public/icons/alph.png';
 
@@ -626,8 +626,8 @@ class SkinA extends HTMLElement {
 
         @keyframes fade {
             0%,100% { color: #FFF }
-            20% {  color: #9a1ccb  }
-            40% {  color: #9a1ccb }
+            20% {  color: #FF0080  }
+            40% {  color: #FF0080 }
         }
         x-card {
         position: relative;
@@ -755,7 +755,7 @@ class SkinA extends HTMLElement {
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
                         ${window.location.href.includes('firo') ? 'ALPH' : 'ALPH'}  
-                        <p id="price"></p> USD
+                        <p id="price"></p> EUR
                       
                       </div>
                       

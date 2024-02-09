@@ -5,6 +5,7 @@ import { Router, Params, RouterLocation } from "@vaadin/router";
 import { _formatter } from "./index";
 
 export class Wallet extends HTMLElement {
+  private _hashrate: any;
 
   constructor() {
     super();
@@ -12,12 +13,24 @@ export class Wallet extends HTMLElement {
     this.shadowRoot.innerHTML = this.html()
     console.log('construct')
   }
+  set minerData(value) {
+    this._hashrate = value
+  }
+  get minerData() {
+   return this._hashrate
+  }
   connectedCallback() {
     const location : RouterLocation = window.location as unknown as RouterLocation
     console.log( location.pathname.split('/').reverse()[0])
     const wallet = location.pathname.split('/').reverse()[0];
     miner(wallet).subscribe(  data => {
-        console.log(data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
+      console.log(data)
+      this.minerData = data;
+
+      this.shadowRoot.getElementById('total').innerHTML = this.minerData?.totalPaid.toFixed(2) + ' ALPH'
+      this.shadowRoot.getElementById('today').innerHTML = this.minerData?.todayPaid.toFixed(2) + ' ALPH'
+
+      console.log(data.performanceSamples.map( (i:any) => { let datas: any[] =  [];
 
           const val = Object.values(i.workers).reduce( (paymnts:any, val:any) => {
             paymnts += val.hashrate
@@ -38,7 +51,7 @@ export class Wallet extends HTMLElement {
             show: false
           }
         },
-        colors: ["#ffda70"],
+        colors: ["#FF0080"],
         stroke: {
           width: 3
         },
@@ -64,7 +77,7 @@ export class Wallet extends HTMLElement {
         markers: {
           size: 5,
           colors: ["#000524"],
-          strokeColor: "#ffde63",
+          strokeColor: "#FF0080",
           strokeWidth: 3
         },
         series: [
@@ -149,6 +162,116 @@ export class Wallet extends HTMLElement {
     })
 
   }
+
+  onflyRewardCalculation() {
+    // const ApiUrl = 'https://api.alephium-pool.com';
+    //
+    // function statsApiCall(action) {
+    //   return fetch(`${ApiUrl}${action}`)
+    //     .then(response => response.json())
+    // }
+    //
+    // function fetchPoolProfit() {
+    //   return statsApiCall('/profit');
+    // }
+    //
+    // function fetchRate() {
+    //   return statsApiCall(`/rate`)
+    // }
+    //
+    // function getPoolProfitUSD(rate, profit) {
+    //   return profit * rate
+    // }
+    //
+    // function perHour(value) {
+    //   return (value / 24);
+    // }
+    //
+    // function costsPerTime(powerConsumption, electricityCosts, multiplier = 1) {
+    //   return powerConsumption * multiplier / 1000 * electricityCosts;
+    // }
+    //
+    // function perWeek(value) {
+    //   return (value * 7);
+    // }
+    //
+    // function addCell(td) {
+    //   return td.insertCell();
+    // }
+    //
+    // function addValue(tr, value, currencyValue = '', sign = '') {
+    //   tr.innerHTML = `${sign}` + ` ${parseFloat(value).toFixed(4)}` + ` ${currencyValue}`
+    // }
+    //
+    // // @ts-ignore
+    // function addRow(tbody, period, reward, income, costs, profit, currencyValue) {
+    //   let td = tbody.insertRow();
+    //   let trPeriod = td.insertCell();
+    //   trPeriod.innerHTML = period;
+    //   addValue(addCell(td), reward, 'ALPH');
+    //   addValue(addCell(td), income, currencyValue);
+    //   addValue(addCell(td), costs, currencyValue, '-');
+    //   addValue(addCell(td), profit, currencyValue);
+    // }
+    //
+    // // @ts-ignore
+    // function generateTable(hashrateValue: number) {
+    //
+    //
+    //   const powerConsumptionValue = calculatorForm.power_consumption.value;
+    //   const currencyValue = "USD";
+    //   const electricityCostsValue = calculatorForm.electricity_costs.value;
+    //
+    //   Promise.all([fetchRate(), fetchPoolProfit()]).then(function([object1, object2]) {
+    //     let tbody = document.getElementsByTagName('tbody')[0];
+    //     tbody.innerHTML = "";
+    //
+    //     let reward = object2.profit * hashrateValue;
+    //     let income = getPoolProfitUSD(object1.rate, reward);
+    //
+    //     addRow(
+    //       tbody,
+    //       '1 hour',
+    //       perHour(reward),
+    //       perHour(income),
+    //       costsPerTime(powerConsumptionValue, electricityCostsValue),
+    //       perHour(income) - costsPerTime(powerConsumptionValue, electricityCostsValue),
+    //       currencyValue)
+    //
+    //     addRow(
+    //       tbody,
+    //       '24 hours',
+    //       reward,
+    //       income,
+    //       costsPerTime(powerConsumptionValue, electricityCostsValue, 24),
+    //       income - costsPerTime(powerConsumptionValue, electricityCostsValue, 24),
+    //       currencyValue)
+    //
+    //     addRow(
+    //       tbody,
+    //       '7 days',
+    //       perWeek(reward),
+    //       perWeek(income),
+    //       costsPerTime(powerConsumptionValue, electricityCostsValue, 168),
+    //       perWeek(income) - costsPerTime(powerConsumptionValue, electricityCostsValue, 168),
+    //       currencyValue)
+    //   })
+    //
+    // }
+    //
+    // const calculatorForm = document.forms.calculator_form;
+    //
+    // calculatorForm.addEventListener("submit", function (event) {
+    //   event.preventDefault();
+    //   generateTable(calculatorForm);
+    // });
+    //
+    // function init(calculatorForm) {
+    //   generateTable(calculatorForm);
+    // }
+    //
+    // init(calculatorForm);
+  }
   html() {
 
     return `
@@ -171,7 +294,17 @@ export class Wallet extends HTMLElement {
   max-width: 100%;
 
 }
-
+#dataList {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  gap: 40px;
+}
+#dataList p {
+color: #ff0080;
+    font-size: xx-large;
+}
 #chart-area {
      padding: 20px;
     margin-bottom: 40px;
@@ -189,7 +322,20 @@ export class Wallet extends HTMLElement {
   
  
 </div>
- 
+ <div id="dataList">
+ <div>
+  <h1>Total Paid</h1>
+    <p id="total">0</p>
+</div>
+     <div>
+  <h1>Today Paid</h1>
+      <p id="today">0</p>
+</div>
+ <div>
+  <h1>Reward 24h</h1>
+      <p>234 ALPH</p>
+</div> 
+</div>
      `;
   }
 
