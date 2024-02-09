@@ -259,7 +259,7 @@ class SkinA extends HTMLElement {
     (!window.location.pathname.includes('firo')) ? PoolService.setApi('alph') : PoolService.setApi('alph');
     axios.defaults.baseURL = 'https://api.hydranetwork.online/api/pools/' + PoolService.getapi();
     const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'dero') ? image.src = 'https://solopool.org/public/icons/alph.png' : image.src = 'https://solopool.org/public/icons/alph.png';
+    (PoolService.getapi() === 'dero') ? image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png" : image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png";
 
 
     this.renderWorkersPartial();
