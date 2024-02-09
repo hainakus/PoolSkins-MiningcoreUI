@@ -36,7 +36,7 @@ export class ConnectStratum extends HTMLElement {
         <td>${i}</td>
         <td>${m.miner}</td>
         <td>${_formatter(m.hashrate, 2, 'H/s')}</td>
-        <td>0.5 BTC</td>
+        <td>-</td>
       </tr>
       
       `).join('')}
