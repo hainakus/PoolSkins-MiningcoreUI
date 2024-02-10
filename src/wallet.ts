@@ -207,7 +207,7 @@ export class Wallet extends HTMLElement {
 
 
 
-    const totalReward24h = minerShare * totalBlocksperday * 3
+    const totalReward24h = minerShare * totalBlocksperday * 2.36
     const coinPrice = await firstValueFrom(getCoinPrice())
     console.log(coinPrice, totalReward24h)
     // Calculate the total value of the miner's reward in 24 hours

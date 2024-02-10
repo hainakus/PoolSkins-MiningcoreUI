@@ -22,8 +22,8 @@ export class Payments extends HTMLElement {
     let html: string = '';
     this.payments?.forEach( (miner:any)  => {
 
-      console.log(this.payments)
-      html +=`<tr><td>${ miner?.blockHeight }</td><td> <progress max="100" value="${miner.confirmationProgress * 100}">${miner.confirmationProgress * 100}%</progress></td><td>${miner.miner}</td><td>${Math.floor(miner.effort * 100)}%</td></tr>`;
+      console.log(miner)
+      html +=`<tr><td><a href="${miner?.infoLink}">  ${ miner?.blockHeight }</a></td><td> <progress max="100" value="${miner.confirmationProgress * 100}">${miner.confirmationProgress * 100}%</progress></td><td>${miner.miner}</td><td>${Math.floor(miner.effort * 100)}%</td></tr>`;
       console.log(html)
 
     })
@@ -108,6 +108,7 @@ export class Payments extends HTMLElement {
       text-align: left;
       padding: 8px;
     }
+      a { text-decoration: none; color: #ffffff }
         </style>
         <div class="">
         <h1>REWARDS FOR ${window.location.pathname.includes('alph') ? 'ALPH' : 'ALPH'}</h1>
