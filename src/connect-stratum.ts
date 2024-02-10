@@ -88,18 +88,7 @@ export class ConnectStratum extends HTMLElement {
         <div id="minersContainer"></div>
      `
   }
-  renderNeox() {
-    return ` <pre><h3>T-REX</h3>
-        <code>
-          ./t-rex -a kawpow -o stratum+tcp://neox-poolin.ml:3305 -u WALLET.WORKERNAME -p YourPassword
-        </code>
-        </pre>
-         <pre><h3>G-Miner</h3>
-        <code>
-         ./miner -a kawpow -s neox-poolin.ml:3305 -u WALLET.WORKERNAME -p YourPassword
-        </code>
-        </pre>`
-  }
+
   html() {
     return `
         <style>

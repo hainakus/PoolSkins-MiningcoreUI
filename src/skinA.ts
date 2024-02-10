@@ -327,7 +327,14 @@ class SkinA extends HTMLElement {
 
   }
 
-
+  renderStratum() {
+    return ` <pre><h3>STRATUM</h3>
+        <code>
+          stratum+tcp://hydranetwork.online:3094
+        </code>
+         
+        </pre>`
+  }
   html() {
     return `
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />   <style>
@@ -760,7 +767,7 @@ class SkinA extends HTMLElement {
                       </div>
                       
               <div class="center-content">
-            
+                    ${this.renderStratum()}
 <!--                 <a href="#" class="button play-btn">ERGO POOL</a>-->
                 <h1 class="image-mask"><slot name="title"><div id="pool"></div> </slot></h1>
                 <h3>Pool Fee  <span id="fee"></span> %, SOLO/PROP</h3>
