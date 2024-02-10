@@ -123,7 +123,7 @@ class Dashboard extends HTMLElement {
       networkDifficulty.innerHTML = _formatter(this.poolStats?.networkStats.networkDifficulty, 5, " ");
       networkHashrate.innerHTML = _formatter(this.poolStats?.networkStats.networkHashrate, 5, "H/s");
 
-      networkLastBlock.innerHTML =`${(Number(this.poolStats?.poolEffort) * Math.pow(2, 30) * 100).toFixed(2)}%`;
+      networkLastBlock.innerHTML =`${(this.poolStats?.poolEffort * 100).toFixed(2)}%`;
 
       poolHash.innerHTML = _formatter(_ttfHashRate, 2, "H/s");
       poolFee.innerHTML = timeToFind ? timeToFind : "-";
