@@ -36,7 +36,7 @@ export class Wallet extends HTMLElement {
 
         datas = [...datas, ...[i.created, val]]
         return datas
-      }).splice(0, 140).pop()[1]
+      }).splice(0, 140).reverse().pop()[1]
 
       console.log(this.minerHash)
       this.shadowRoot.getElementById('current').innerHTML = await this.calculateMinerReward(this.minerHash) + ' EUR'
@@ -55,7 +55,7 @@ export class Wallet extends HTMLElement {
 
         datas = [...datas, ...[i.created, val]]
         return datas
-      }).splice(0, 140).pop()[1]
+      }).splice(0, 140).reverse().pop()[1]
       this.shadowRoot.getElementById('total').innerHTML = this.minerData?.totalPaid.toFixed(2) + ' ALPH'
       this.shadowRoot.getElementById('today').innerHTML = this.minerData?.todayPaid.toFixed(2) + ' ALPH'
       this.shadowRoot.getElementById('current').innerHTML = await this.calculateMinerReward(this.minerHash) + ' EUR'
