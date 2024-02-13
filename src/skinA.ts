@@ -1,6 +1,5 @@
-import { createQuery } from "@datorama/akita";
-import { map, tap } from "rxjs";
-import { blocks, getCoinPrice, miner, minerList, poolStats, statistics } from "./api.service";
+import { tap } from "rxjs";
+import { getCoinPrice } from "./api.service";
 import { _formatter } from "./index";
 import { PoolService } from "./poolService";
 import axios from "axios";
@@ -8,12 +7,7 @@ import { store, ws } from "./ws.service";
 import { MarketStoreState } from "./store";
 
 
-console.log("Hello World!");
-
-
 class SkinA extends HTMLElement {
-   _poolFee: any;
-
   constructor() {
     super();
 
@@ -22,35 +16,35 @@ class SkinA extends HTMLElement {
 
     this.shadowRoot.innerHTML = this.html();
     store.query.select().pipe(tap((data: any) => {
-      if(!data.loading) {
-        console.log('blocks', data?.pool?.kaspa.poolFeePercent)
+      if (!data.loading) {
+        console.log("blocks", data?.pool?.kaspa.poolFeePercent);
         this.blocks = data?.pool?.kaspa?.totalBlocks;
-        this.poolFee = data?.pool?.kaspa?.poolFeePercent
-        this.miners = data?.pool?.kaspa?.poolStats?.connectedMiners
+        this.poolFee = data?.pool?.kaspa?.poolFeePercent;
+        this.miners = data?.pool?.kaspa?.poolStats?.connectedMiners;
       }
-    })).subscribe()
+    })).subscribe();
 
     ws.onmessage = (message) => {
-      console.log(`message received`, message.data)
-      const m = JSON.parse(message.data)
-      if(m.type === 'hashrateupdated' && m.miner === null && m.poolId === 'alph') {
-        store.setDashBoardHasrate(m.hashrate, 'kaspa')
-        console.log(store.query.getValue())
+      console.log(`message received`, message.data);
+      const m = JSON.parse(message.data);
+      if (m.type === "hashrateupdated" && m.miner === null && m.poolId === "alph") {
+        store.setDashBoardHasrate(m.hashrate, "kaspa");
+        console.log(store.query.getValue());
       }
-      if(m.type === 'hashrateupdated' && m.miner !== null && m.poolId === 'alph') {
-        const m = JSON.parse(message.data)
-        store.updateTopMiner(m, 'kaspa')
+      if (m.type === "hashrateupdated" && m.miner !== null && m.poolId === "alph") {
+        const m = JSON.parse(message.data);
+        store.updateTopMiner(m, "kaspa");
       }
 
-      if(m.type === 'blockfound' && m.poolId === 'alph') {
+      if (m.type === "blockfound" && m.poolId === "alph") {
 
-        const js = document.createElement('script')
-        js.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js"
-        this.shadowRoot.getRootNode().appendChild(js)
-        console.log('ws opened on browser2')
+        const js = document.createElement("script");
+        js.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js";
+        this.shadowRoot.getRootNode().appendChild(js);
+        console.log("ws opened on browser2");
         //ws.send('hello world')
 
-        const node = document.createElement('script')
+        const node = document.createElement("script");
         node.innerHTML = ` 
             let nouvelle,
               ancienne,
@@ -190,30 +184,35 @@ class SkinA extends HTMLElement {
             function mouseReleased() {
             
             }
-         `
-        this.shadowRoot.getElementById('c').getRootNode().appendChild(node)
+         `;
+        this.shadowRoot.getElementById("c").getRootNode().appendChild(node);
 
-        setTimeout(( ) => {
-            this.shadowRoot.getElementById('c').getRootNode().removeChild(node)
-          this.shadowRoot.getElementById('c').getRootNode().removeChild(js)
-          console.log(document.querySelector('body'))
-          const c = document.querySelector('body')
-          const e = document.getElementById('defaultCanvas0')
-          console.log(e)
-          document.body.removeChild(e)
-          console.log(c)
+        setTimeout(() => {
+          this.shadowRoot.getElementById("c").getRootNode().removeChild(node);
+          this.shadowRoot.getElementById("c").getRootNode().removeChild(js);
+          console.log(document.querySelector("body"));
+          const c = document.querySelector("body");
+          const e = document.getElementById("defaultCanvas0");
+          console.log(e);
+          document.body.removeChild(e);
+          console.log(c);
 
-        },1000 * 20)
+        }, 1000 * 20);
       }
-    }
+    };
   }
-  get poolFee () {
-    return this._poolFee
+
+  _poolFee: any;
+
+  get poolFee() {
+    return this._poolFee;
   }
+
   set poolFee(value: any) {
-    this._poolFee = value
-    this.shadowRoot.getElementById('fee').innerHTML = value
+    this._poolFee = value;
+    this.shadowRoot.getElementById("fee").innerHTML = value;
   }
+
   private _miners: any;
 
   get miners() {
@@ -223,7 +222,7 @@ class SkinA extends HTMLElement {
   set miners(value: any) {
     console.log(value);
     this._miners = value;
-    this.shadowRoot.querySelector("#miners").innerHTML = '0'
+    this.shadowRoot.querySelector("#miners").innerHTML = "0";
     this.shadowRoot.querySelector("#miners").innerHTML = value;
   }
 
@@ -238,28 +237,43 @@ class SkinA extends HTMLElement {
   set minerHashrate(value: any) {
     console.log(value);
   }
+  /* Set the width of the side navigation to 250px */
+   openNav() {
+
+  }
+
+  /* Set the width of the side navigation to 0 */
+   closeNav() {
+    this.shadowRoot.getElementById("mySidenav").style.width = "0";
+     this.shadowRoot.getElementById("c").style.marginLeft = "0px";
+  }
   changePool() {
 
 
-    (PoolService.getapi() === 'alph') ? this.navigate('/') : this.navigate('/')
+    (PoolService.getapi() === "alph") ? this.navigate("/") : this.navigate("/");
   }
+
   navigate(url: string | URL) {
     window.history.pushState({}, null, url);
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.dispatchEvent(new PopStateEvent("popstate"));
   }
+
   connectedCallback() {
 
-    const forward = this.shadowRoot.getElementById('navForward');
-    forward.addEventListener('click',  (  ) =>  {
-      (PoolService.getapi() === 'alph') ? this.navigate( '/') : this.navigate( '/');
-
-      window.dispatchEvent(new CustomEvent( 'togglePool'));
+    const forward = this.shadowRoot.getElementById("navForward");
+    forward.addEventListener("click", () => {
+      this.shadowRoot.getElementById("mySidenav").style.width = "25%";
+      this.shadowRoot.getElementById("c").style.marginLeft = "25%";
     });
-
-    (!window.location.pathname.includes('firo')) ? PoolService.setApi('alph') : PoolService.setApi('alph');
-    axios.defaults.baseURL = 'https://api.hydranetwork.online/api/pools/' + PoolService.getapi();
-    const image = this.shadowRoot.querySelector('.pool-coin') as HTMLImageElement;
-    (PoolService.getapi() === 'dero') ? image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png" : image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png";
+    this.shadowRoot.getElementById('closeaside').addEventListener('click', () => {
+      this.closeNav()
+    })
+    this.shadowRoot.getElementById('navBack').addEventListener('click', () => {
+        this.closeNav()
+    })
+    axios.defaults.baseURL = "https://api.hydranetwork.online/api/pools/" + PoolService.getapi();
+    const image = this.shadowRoot.querySelector(".pool-coin") as HTMLImageElement;
+    (PoolService.getapi() === "dero") ? image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png" : image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png";
 
 
     this.renderWorkersPartial();
@@ -269,22 +283,22 @@ class SkinA extends HTMLElement {
     const toggle = this.shadowRoot.querySelector(".pop-video");
 
     toggle.addEventListener("click", () => {
-     // nav.classList.toggle("open-nav");
-     // toggle.classList.toggle("open-nav");
+      // nav.classList.toggle("open-nav");
+      // toggle.classList.toggle("open-nav");
     });
 
-    this.shadowRoot.getElementById('miners_TOP').addEventListener('click', () => {
-      this.navigate('/connect')
+    this.shadowRoot.getElementById("miners_TOP").addEventListener("click", () => {
+      this.navigate("/connect");
 
-    })
-    this.shadowRoot.getElementById('wallet').addEventListener('click', () => {
-      this.navigate('/wallet')
+    });
+    this.shadowRoot.getElementById("wallet").addEventListener("click", () => {
+      this.navigate("/wallet");
 
-    })
-    this.shadowRoot.getElementById('payments').addEventListener('click', () => {
-      this.navigate('/payments')
+    });
+    this.shadowRoot.getElementById("payments").addEventListener("click", () => {
+      this.navigate("/payments");
 
-    })
+    });
   }
 
   renderWorkersPartial() {
@@ -311,18 +325,16 @@ class SkinA extends HTMLElement {
     //   });
     // })).subscribe();
     store.query.select()
-      .pipe(
-        tap((data:MarketStoreState) => {
-        
-          if(data && data.pool)
-            console.log("stats", data);
-            this.shadowRoot.querySelector("#pool").innerHTML = "";
-            const poolHash = document.createElement("h1");
-            poolHash.classList.add('ToFadeInAndOut')
-            poolHash.innerText = "POOL HASHRATE " + _formatter((data.pool?.kaspa?.poolStats.poolHashrate), 2, "H/s");
-            this.shadowRoot.querySelector("#pool").append(poolHash);
+      .pipe(tap((data: MarketStoreState) => {
 
-        }))
+        if (data && data.pool) console.log("stats", data);
+        this.shadowRoot.querySelector("#pool").innerHTML = "";
+        const poolHash = document.createElement("h1");
+        poolHash.classList.add("ToFadeInAndOut");
+        poolHash.innerText = "POOL HASHRATE " + _formatter((data.pool?.kaspa?.poolStats.poolHashrate), 2, "H/s");
+        this.shadowRoot.querySelector("#pool").append(poolHash);
+
+      }))
       .subscribe();
 
   }
@@ -333,8 +345,9 @@ class SkinA extends HTMLElement {
           stratum+tcp://hydranetwork.online:3094
         </code>
          
-        </pre>`
+        </pre>`;
   }
+
   html() {
     return `
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />   <style>
@@ -345,14 +358,10 @@ class SkinA extends HTMLElement {
         }
         
         #c {
-            width: 100vw;
-            height: 100vh;
+  
             display: block;
-            z-index: 10;
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
+            z-index: 9;
+
         }
         .overlay-canvas {
             content: "";
@@ -368,7 +377,7 @@ class SkinA extends HTMLElement {
           }
   
            :host {
-                       
+                         z-index: 9;
                             margin: 0;
                             padding: 0;
                             font-family: Montserrat, sans-serif;
@@ -450,6 +459,7 @@ class SkinA extends HTMLElement {
             }
             .navigation svg {
                 cursor: pointer;
+                  z-index: 999;
             }
             .footer {
                 display: flex;
@@ -633,8 +643,8 @@ class SkinA extends HTMLElement {
 
         @keyframes fade {
             0%,100% { color: #FFF }
-            20% {  color: #FF0080  }
-            40% {  color: #FF0080 }
+            20% {  color: #00eaca  }
+            40% {  color: #00eaca }
         }
         x-card {
         position: relative;
@@ -699,18 +709,129 @@ class SkinA extends HTMLElement {
   background-color: var(--theme-bg-color);
    box-shadow: 9.91px 9.91px 15px #21242d, -9.91px -9.91px 15px rgb(22 25 37);
 }
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  top: 0; /* Stay at the top */
+  left: 0;
+border-radius: 5px;
+background: linear-gradient(145deg, #2d3140, #262936);
+box-shadow:  20px 20px 60px #1d2029,
+             -20px -20px 60px #373c4f;
+  overflow-x: hidden; /* Disable horizontal scroll */
+ 
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  z-index: 99;
 
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: flex;
+  flex-wrap: wrap;
+  transition: 0.3s;
+      flex-direction: row;
+    justify-content: center;
+    
+    align-items: start;
+    gap: 10px;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#c {
+  transition: margin-left .5s;
+   z-index: 99;
+}
+.card-coin {
+    backdrop-filter: blur(20px) saturate(93%);
+    -webkit-backdrop-filter: blur(20px) saturate(93%);
+    background-color: rgba(17, 25, 40, 0.75);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    width: 240px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+box-shadow:  20px 20px 60px #1d2029,
+             -20px -20px 60px #373c4f;
+           
+}
+.card-coin p {
+  font-size: 1.4rem;
+  font-weight: lighter;
+}
+.card-coin img {
+margin-top: 20px;
+width: 40%;
+height: 40%;
+  object-fit: contain;
+}
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
     </style>
 
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" id="closeaside">&times;</a>
 
+    <div class="card-coin">
+        <img src="https://k1pool.com/assets/media/logos/coin-kaspa.png">
+        <p>KAS is at TOP price</p>
+    </div>
+    <div class="card-coin">
+        <img src="https://k1pool.com/assets/media/logos/coin-kaspa.png">
+        <p>KAS is at TOP price</p>
+    </div>
+    <div class="card-coin">
+        <img src="https://k1pool.com/assets/media/logos/coin-kaspa.png">
+        <p>KAS is at TOP price</p>
+    </div>
+    
+</div>
 
         
-              <div class="hero">
+  
              
-                  <div class="navigation">
+            
+                 
+ 
+                
+       
+                  <main id="c">
+                  <div class="container">
+                  
+                        <div class="navigation">
                         <div class="buttons">   
-                            <svg class="button-back" id="navBack" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
-                            <svg id="navForward" class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
+                            <svg class="button-back"  id="navBack" width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="13 16 7 10 13 4"></polyline></svg>
+                            <svg id="navForward"  class="button-fwd"  width="40" height="40" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#FFF"  stroke-width="1.03" points="7 4 13 10 7 16"></polyline></svg></a>
                    
                      
                             <button class="button" type="button" id="miners_TOP" >
@@ -727,10 +848,10 @@ class SkinA extends HTMLElement {
                               <i class="fa-solid fa-money-bill"></i>
                             </button>
                         
-                            <a href="${window.location.pathname === '/' ? '' : window.location.pathname}/" >
+                            <a href="${window.location.pathname === "/" ? "" : window.location.pathname}/" >
                               <div class="pop-video">
                                   <img width="50px" class="pool-coin"
-                              src="assets/etherone_logo.png">
+                                         src="assets/etherone_logo.png" alt="$$$">
                              </div>
                              </a>
                         </div>
@@ -738,30 +859,12 @@ class SkinA extends HTMLElement {
                       
                     
                   </div> 
-                 
-                  </nav>
-                
-<!--                    <div class="card"><x-card></x-card><h1>Dummy</h1></div>-->
-<!--                    <div class="card2"></div>-->
-<!--                     <div class="card3"></div>-->
-<!--                <div class="play-btn" id="play">-->
-<!--              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512">-->
-<!--                      <g>-->
-<!--                        <g fill="#FFF">-->
-<!--                          <path d="m354.2,247.4l-135.1-92.4c-4.2-3.1-15.4-3.1-16.3,8.6v184.8c1,11.7 12.4,11.9 16.3,8.6l135.1-92.4c3.5-2.1 8.3-10.7 0-17.2zm-130.5,81.3v-145.4l106.1,72.7-106.1,72.7z"/>-->
-<!--                          <path d="M256,11C120.9,11,11,120.9,11,256s109.9,245,245,245s245-109.9,245-245S391.1,11,256,11z M256,480.1    C132.4,480.1,31.9,379.6,31.9,256S132.4,31.9,256,31.9S480.1,132.4,480.1,256S379.6,480.1,256,480.1z"/>-->
-<!--                        </g>-->
-<!--                      </g>-->
-<!--                    </svg>-->
-       
-                  <main id="c">
-                  <div class="container">
                     <slot></slot>
                     <div class="cards block" id="ce"></div>
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
                         <p id="blocks"></p>  Blocks
-                        ${window.location.href.includes('firo') ? 'ALPH' : 'ALPH'}  
+                        ${window.location.href.includes("firo") ? "ALPH" : "ALPH"}  
                         <p id="price"></p> EUR
                       
                       </div>
@@ -787,23 +890,9 @@ class SkinA extends HTMLElement {
    
        
                  
-              </div>
-              
-          
-            </div>
+ 
         `;
   }
-
-  private getReadableHashRateString = function(hashrate: number) {
-    if (hashrate < 1000000) {
-      return (Math.round(hashrate / 1000) / 1000).toFixed(2) + " KB/s";
-    }
-    var byteUnits = [" MH/s", " GH/s", " TH/s", " PH/s"];
-    var i = Math.floor((Math.log(hashrate / 1000) / Math.log(1000)) - 1);
-    hashrate = (hashrate / 1000) / Math.pow(1000, i + 1);
-    return hashrate.toFixed(2) + byteUnits[i];
-  };
-
 }
 
 customElements.define("x-skin-a", SkinA);

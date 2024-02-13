@@ -69,8 +69,7 @@
         body {
             margin: 0;
             background-color: var(--theme-bg-color); /*#dedede;*/
-            height: 100%;
-            width: 100%;
+
         }
         canvas {
             position: absolute;
@@ -81,9 +80,8 @@
             z-index: -10;
         }
         body {
-            height:100vh;
             background-color: var(--theme-bg-color); /*#dedede;*/
-            background-size: 120% 120%;
+            overflow-x: hidden; /* Disable horizontal scroll */
 
         }
         @keyframes gradient-animation {
