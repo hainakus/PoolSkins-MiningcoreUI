@@ -82,8 +82,8 @@ class Dashboard extends HTMLElement {
       var ttf;
       var coin;
 
-      (window.location.href.includes('firo')) ? ttf = 3.8 : ttf = 3.8;
-      (window.location.href.includes('firo')) ? coin = ' ALPH' : coin = ' ALPH';
+      (window.location.href.includes('firo')) ? ttf = 0.6 : ttf = 0.6;
+      (window.location.href.includes('firo')) ? coin = ' KAS' : coin = ' KAS';
       var _ttfNetHashRate = this.poolStats?.networkStats.networkHashrate;
       var _ttfHashRate = this.poolStats?.poolStats?.poolHashrate;
       console.log('pool',this.poolStats?.poolEffort)

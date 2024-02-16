@@ -6,8 +6,10 @@ import axios from "axios";
 import { store, ws } from "./ws.service";
 import { MarketStoreState } from "./store";
 
+import { Router } from "@vaadin/router";
 
-class SkinA extends HTMLElement {
+
+ class SkinA extends HTMLElement {
   constructor() {
     super();
 
@@ -247,11 +249,6 @@ class SkinA extends HTMLElement {
     this.shadowRoot.getElementById("mySidenav").style.width = "0";
      this.shadowRoot.getElementById("c").style.marginLeft = "0px";
   }
-  changePool() {
-
-
-    (PoolService.getapi() === "alph") ? this.navigate("/") : this.navigate("/");
-  }
 
   navigate(url: string | URL) {
     window.history.pushState({}, null, url);
@@ -259,7 +256,17 @@ class SkinA extends HTMLElement {
   }
 
   connectedCallback() {
+    const router = new Router(this.shadowRoot.getElementById('outlet'), {baseUrl: '/'} );
+    router.setRoutes([
 
+      {path: '/', component: 'x-dash'},
+      {path: '/connect', component: 'x-connect'},
+      {path: '/wallet', component: 'x-chart'},
+      {path: '/wallet/:id', component: 'x-wallet'},
+      {path: '/payments', component: 'x-payments'},
+
+      {path: '(.*)', redirect: '/'},
+    ]);
     const forward = this.shadowRoot.getElementById("navForward");
     forward.addEventListener("click", () => {
       this.shadowRoot.getElementById("mySidenav").style.width = "25%";
@@ -271,9 +278,9 @@ class SkinA extends HTMLElement {
     this.shadowRoot.getElementById('navBack').addEventListener('click', () => {
         this.closeNav()
     })
-    axios.defaults.baseURL = "https://api.hydranetwork.online/api/pools/" + PoolService.getapi();
+    axios.defaults.baseURL = "http://hydranetwork.online:9000/api/pools/" + PoolService.getapi();
     const image = this.shadowRoot.querySelector(".pool-coin") as HTMLImageElement;
-    (PoolService.getapi() === "dero") ? image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png" : image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/alph.png";
+    (PoolService.getapi() === "kaspa") ? image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/kas.png" : image.src = "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/kas.png";
 
 
     this.renderWorkersPartial();
@@ -286,7 +293,10 @@ class SkinA extends HTMLElement {
       // nav.classList.toggle("open-nav");
       // toggle.classList.toggle("open-nav");
     });
-
+    this.shadowRoot.getElementById("kas").addEventListener("click", () => {
+      PoolService.setApi('kaspa')
+      alert('n')
+    });
     this.shadowRoot.getElementById("miners_TOP").addEventListener("click", () => {
       this.navigate("/connect");
 
@@ -326,13 +336,19 @@ class SkinA extends HTMLElement {
     // })).subscribe();
     store.query.select()
       .pipe(tap((data: MarketStoreState) => {
-
-        if (data && data.pool) console.log("stats", data);
+        let html: string = '<ul>';
         this.shadowRoot.querySelector("#pool").innerHTML = "";
         const poolHash = document.createElement("h1");
         poolHash.classList.add("ToFadeInAndOut");
         poolHash.innerText = "POOL HASHRATE " + _formatter((data.pool?.kaspa?.poolStats.poolHashrate), 2, "H/s");
         this.shadowRoot.querySelector("#pool").append(poolHash);
+        for (const key in  data.pool?.kaspa?.ports) {
+          console.log(key)
+
+          html += '<li>stratum+tcp://hydranetwork.online:'+ key + ' (' + data.pool?.kaspa?.ports[key].name + ')</li>'
+        }
+        html += '</ul>'
+        this.shadowRoot.getElementById('stratums').innerHTML = html
 
       }))
       .subscribe();
@@ -341,8 +357,8 @@ class SkinA extends HTMLElement {
 
   renderStratum() {
     return ` <pre><h3>STRATUM</h3>
-        <code>
-          stratum+tcp://hydranetwork.online:3094
+        <code id="stratums">
+          
         </code>
          
         </pre>`;
@@ -350,8 +366,41 @@ class SkinA extends HTMLElement {
 
   html() {
     return `
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
  
+    @keyframes gradient-animation {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+    h4 {
+        font-weight: 100!important;
+    }
+    #outlet > .leaving {
+            animation: 1s fadeOut ease-in-out;
+        }
+        #outlet > .entering {
+            animation: 1s fadeIn linear;
+        }
+        @keyframes fadeOut {
+            from {opacity: 1;}
+            to {opacity: 0;}
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        a { text-decoration: none; }
         a {
           text-decoration: none;
           color: #999ba5;
@@ -359,7 +408,8 @@ class SkinA extends HTMLElement {
         
         #c {
   
-            display: block;
+            display: flex;
+            flex-direction: column;
             z-index: 9;
 
         }
@@ -780,6 +830,7 @@ box-shadow:  20px 20px 60px #1d2029,
     align-items: center;
 box-shadow:  20px 20px 60px #1d2029,
              -20px -20px 60px #373c4f;
+     cursor: pointer;        
            
 }
 .card-coin p {
@@ -792,6 +843,11 @@ width: 40%;
 height: 40%;
   object-fit: contain;
 }
+#outlet {
+    width: 60%;
+    align-self: flex-end;
+    position: absolute;
+}
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
@@ -802,7 +858,7 @@ height: 40%;
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" id="closeaside">&times;</a>
 
-    <div class="card-coin">
+    <div class="card-coin" id="kas">
         <img src="https://k1pool.com/assets/media/logos/coin-kaspa.png">
         <p>KAS is at TOP price</p>
     </div>
@@ -826,6 +882,11 @@ height: 40%;
                 
        
                   <main id="c">
+                     <div class="wrapper" style="
+    display: flex;
+    flex-direction: column;
+    margin: 50px;
+">     <div id="outlet"></div>
                   <div class="container">
                   
                         <div class="navigation">
@@ -856,10 +917,10 @@ height: 40%;
                              </a>
                         </div>
                       
-                      
+                       </div>
                     
                   </div> 
-                    <slot></slot>
+                    <slot> </slot>
                     <div class="cards block" id="ce"></div>
                                       <div class="cards score">
                         <p id="miners"></p>  Miners
@@ -886,13 +947,15 @@ height: 40%;
                 </div>
               </div>
               </div>
+          
                   </main>
    
        
-                 
- 
+          
+       
         `;
   }
 }
 
 customElements.define("x-skin-a", SkinA);
+export default  SkinA;

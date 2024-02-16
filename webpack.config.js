@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const isProduction = process.env.NODE_ENV == "production";
+const { ModuleFederationPlugin } = require('webpack').container;
 
 const config = {
   output: {
@@ -13,6 +14,7 @@ const config = {
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "ruby_server/public"),
+   // filename: 'remoteEntry.js'
   },
   devServer: {
     open: true,
@@ -31,9 +33,14 @@ const config = {
         { from: "src/assets", to: "assets" },
 
       ],
-    })
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+    }),
+    new ModuleFederationPlugin({
+      name: 'remote',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './skinA': './src/skinA',
+      },
+    }),
   ],
   module: {
     rules: [

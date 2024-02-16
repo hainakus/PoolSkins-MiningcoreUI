@@ -3,10 +3,11 @@ import { defer, interval, map, of, switchMap, tap } from "rxjs";
 
 import { MarketStore } from "./store";
 import { poolStats } from "./api.service";
+import { environment } from "./environment.prod";
 
 
 
-const baseURL = 'https://api.hydranetwork.online/api/pools/';
+const baseURL = environment.apiUrl + '/api/pools/';
 
 export const store = new MarketStore();
 
@@ -17,11 +18,10 @@ poolService.subscribe( message => {
   store.setDashBoard(message.pool, 'kaspa')
   console.log(store.query.getValue())
 })
-export const ws = new WebSocket('wss://api.hydranetwork.online/notifications')
+export const ws = new WebSocket(environment.wssUrl + '/notifications')
 
 const poolEffort = interval(55000).pipe(switchMap(_ => poolService.pipe(tap( data => {
-  console.log("POOOL", data)
- store.setDashBoardEffort(  Number(data.pool.poolEffort) * Math.pow(2, 30), 'kaspa')
+ store.setDashBoardEffort(  data.pool.poolEffort, 'kaspa')
   store.setTopMiner(data.pool.topMiners, 'kaspa')
 })))).subscribe()
 

@@ -8,6 +8,7 @@ export interface MarketStoreState {
 
 export interface Ethone<T = string> {
     [T:string]: {
+      ports: any;
         topMiners: any[];
         poolStats: any;
         poolHashrate: number,
